@@ -1,0 +1,74 @@
+{
+  "name": "typescript-nextjs-starter",
+  "description": "A TypeScript starter for Next.js that includes all you need to build amazing projects",
+  "version": "1.0.0",
+  "private": true,
+  "author": "João Pedro Schmitz <hey@joaopedro.dev> (@jpedroschmitz)",
+  "license": "MIT",
+  "keywords": [
+    "nextjs",
+    "starter",
+    "typescript"
+  ],
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\"",
+    "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write",
+    "postinstall": "husky install"
+  },
+  "lint-staged": {
+    "./src/**/*.{ts,js,jsx,tsx}": [
+      "eslint --ignore-path .gitignore --fix",
+      "prettier --ignore-path .gitignore --write"
+    ]
+  },
+  "dependencies": {
+
+    "@livekit/components-react": "0.7.0",
+    "animate.css": "4.1.1",
+    "audio-recorder-polyfill": "0.4.1",
+    "cross-env": "7.0.3",
+    "daisyui": "2.51.5",
+    "easy-typer-js": "2.1.0",
+    "livekit-client": "1.7.1",
+    "livekit-server-sdk": "1.1.0",
+    "mic-speaker-recorder": "1.0.2",
+    "multistreamsmixer": "1.2.2",
+    "next": "13.2.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hot-toast": "2.4.0",
+    "react-router-dom": "5",
+    "react-typist-component": "1.0.5",
+    "recordrtc": "5.6.2",
+    "set-interval-async": "3.0.3",
+    "unique-names-generator": "4.7.1"
+  },
+  "devDependencies": {
+
+    "@commitlint/cli": "17.5.1",
+    "@commitlint/config-conventional": "17.4.4",
+    "@types/node": "18.15.11",
+    "@types/react": "18.0.31",
+    "@types/react-dom": "18.0.11",
+    "@types/react-router-dom": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "5.57.0",
+    "@typescript-eslint/parser": "5.57.0",
+    "autoprefixer": "10.4.14",
+    "eslint": "8.37.0",
+    "eslint-config-next": "13.2.4",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-import-resolver-typescript": "3.5.4",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-prettier": "4.2.1",
+    "husky": "8.0.3",
+    "lint-staged": "13.2.0",
+    "postcss": "8.4.21",
+    "prettier": "2.8.7",
+    "tailwindcss": "3.3.1",
+    "typescript": "5.0.2"
+  }
+}

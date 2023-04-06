@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    /* background-color: #14142b; */
+    color: white;
+}
+.divider::after{
+    background-color: white;
+}
+.divider::before{
+    background-color: white;
+}
+.btn:hover{
+    cursor: pointer;
+}
