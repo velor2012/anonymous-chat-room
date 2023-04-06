@@ -26,7 +26,7 @@ export function UsernameInput({ submitText, onSubmit }: Props) {
           />
             <button
                 // onClick={this.handleOnClicked}
-                className="btn w-20 border-none bg-yellow-600 hover:bg-yellow-800"
+                className="btn w-20 border-none bg-yellow-600 text-white hover:bg-yellow-800"
             >
                 👉GO
             </button>

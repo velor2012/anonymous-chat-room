@@ -50,7 +50,7 @@ export default function MemberCard({ participant, isme, ...props }: AudioVisuali
                 <AudioVisualizer
                     audio={t}
                     name={participant.identity}
-                    muteState={participant.isSpeaking}
+                    muteState={participant.isMicrophoneEnabled}
                 ></AudioVisualizer>
             </ParticipantContext.Provider>
         </div>

@@ -29,7 +29,7 @@ export function OptionPanel() {
     
   return (
     <div className=" flex text-center justify-center items-center ">
-        <label htmlFor="optionModel" className="btn  border-none bg-yellow-600 hover:bg-yellow-800">修改设置</label>
+        <label htmlFor="optionModel" className="btn  border-none bg-yellow-600 text-white hover:bg-yellow-800">修改设置</label>
 
         <input type="checkbox" id="optionModel" className="modal-toggle" />
         <div className="modal">

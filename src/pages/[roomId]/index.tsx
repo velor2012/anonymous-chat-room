@@ -8,7 +8,7 @@ import {
 import { Track } from 'livekit-client';
 // import {AudioConference} from "@/components/TestCom"
 // import { LiveKitRoom } from "@livekit/components-react";
-import { LiveKitRoom, AudioConference } from "@livekit/components-react";
+import { LiveKitRoom, AudioConference, StartAudio } from "@livekit/components-react";
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { WebAudioContext } from '@/tools/webAudio';
 import { RoomInfo } from '@/components/RoomInfo';
@@ -161,9 +161,11 @@ export default function Room() {
                 connectOptions={{ autoSubscribe: true }}
                 options={{ expWebAudioMix: { audioContext } }}
             >
+                <div className='opacity-0'>
+                    <StartAudio label='点击此处同意播放音频'>点击此处同意播放音频</StartAudio>
+                </div>
                 <WebAudioContext.Provider value={audioContext}>
                     <div className="flex h-full">
-
                             <MeetingPanel/>
                     </div>
                 </WebAudioContext.Provider>

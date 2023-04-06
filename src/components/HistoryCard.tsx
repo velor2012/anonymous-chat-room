@@ -64,7 +64,7 @@ export function HistoryCardItem(props: Props) {
     );
 
     return (
-        <div className=' bg-white bg-opacity-5 md:w-[240px] md:h-[100px] mx-4 mt-2 p-2 flex flex-col justify-between rounded-md items-center'>
+        <div className=' bg-white bg-opacity-5 w-[200px] md:w-[240px] md:h-[100px] mx-4 mt-2 p-2 flex flex-col justify-between rounded-md items-center'>
             <div className='flex w-full justify-between'>
                 <span className='text-white font-bold md:text-lg'>
                     房间：

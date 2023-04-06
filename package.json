@@ -26,12 +26,12 @@
     ]
   },
   "dependencies": {
-
     "@livekit/components-react": "0.7.0",
     "animate.css": "4.1.1",
     "audio-recorder-polyfill": "0.4.1",
     "cross-env": "7.0.3",
     "daisyui": "2.51.5",
+    "detectrtc": "1.4.1",
     "easy-typer-js": "2.1.0",
     "livekit-client": "1.7.1",
     "livekit-server-sdk": "1.1.0",
@@ -48,7 +48,6 @@
     "unique-names-generator": "4.7.1"
   },
   "devDependencies": {
-
     "@commitlint/cli": "17.5.1",
     "@commitlint/config-conventional": "17.4.4",
     "@types/node": "18.15.11",

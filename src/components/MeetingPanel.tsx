@@ -1,6 +1,6 @@
 
 import React, { HTMLAttributes, useEffect, useMemo, useState } from 'react';
-import { ParticipantEvent, RoomEvent, Track } from 'livekit-client';
+import { LocalParticipant, ParticipantEvent, RoomEvent, Track } from 'livekit-client';
 import MemberCard from "@/components/MemberCard"
 import {
     ParticipantContext, ConnectionQualityIndicator, useParticipants, ParticipantName, AudioTrack,
@@ -18,6 +18,13 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     const [delays, setDelays] = useState<number[]>([])
     const [delayme, setDelaysMe] = useState<number>(0)
     const [loop, setLoop] = useState<any>(null);
+    const room = useRoomContext();
+    
+    room.on(
+        RoomEvent.Connected,()=>{
+            room.localParticipant.setMicrophoneEnabled(true)
+        }
+    )
     let i = 0
     // useMemo(() => {
 
@@ -50,7 +57,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     }, [participants.length])
 
     return (
-        <div className='flex justify-center h-full w-full  animate__animated  animate__zoomIn'>
+        <div className='flex justify-center h-full w-full  mt-2'>
             <div className=' md:px-12  flex w-full md:w-3/4'>
                 {
                     participants.map((participant, key) => {
@@ -64,7 +71,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
                             return <div key={key} ></div>
                         }
                         return (
-                            <div className='w-1/2 md:w-auto' key={key}>
+                            <div className='w-full px-4 sm:px-0 sm:w-auto' key={key}>
                                 <MemberCard delays={delays} idx={key} participant={participant} isme={i == 1}></MemberCard>
                             </div>
                         )

@@ -79,7 +79,7 @@ export default function TopBar() {
 
         {/* Put this part before </body> tag */}
         <input type="checkbox" id="topBarModal" className="modal-toggle" />
-        <div className="modal">
+        <div className="modal h-screen">
           <div
             className="modal-box max-w-[1000px] max-h-[100%]"
             style={{ backgroundColor: theme.color3 }}

@@ -52,7 +52,7 @@ class Home extends React.Component {
                 <Link href={`/${this.state.roomIdText}?username=${this.state.nickNameText}`} > 
                     <button
                         // onClick={this.handleOnClicked}
-                        className="btn w-20 border-none bg-yellow-600 hover:bg-yellow-800"
+                        className="btn w-20 border-none bg-yellow-600 text-white hover:bg-yellow-800"
                         // style={{backgroundColor: "#8FBC94"}}
                     >
                         👉GO

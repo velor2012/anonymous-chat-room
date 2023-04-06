@@ -76,7 +76,7 @@ export function ChatCard({ messageFormatter, ...props }: ChatProps) {
                     placeholder="Enter a message..."
                 />
                 <div className='mt-2 text-end'> 
-                    <button type="submit" className=" btn lk-button lk-chat-form-button bg-yellow-600  hover:bg-yellow-800 border-none" disabled={isSending}>
+                    <button type="submit" className=" btn lk-button lk-chat-form-button bg-yellow-600 text-white  hover:bg-yellow-800 border-none" disabled={isSending}>
                         Send
                     </button>
                 </div>
