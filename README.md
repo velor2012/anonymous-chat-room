@@ -1,5 +1,7 @@
-# anonymous-chat-room
-Anonymous Chat Room Power By Livekit [livekit](https://livekit.io/) And [Next.js](https://nextjs.org/)
+# What's it
+An Anonymous Chat Room Power By Livekit [livekit](https://livekit.io/) And [Next.js](https://nextjs.org/)
+
+ENGLISH | [中文](./README-cn.md)
 
 ## Online demo
 
@@ -52,7 +54,7 @@ This is a nextjs app, which you can deploy by following these steps
 
 ## Thanks
 
-free4.chat is built on the top of
+this repository is built on the top of
  - [Free4chat](https://github.com/madawei2699/free4chat)
 
  - [spatial-audio](https://github.com/livekit-examples/)

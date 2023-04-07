@@ -31,10 +31,6 @@ class Home extends React.Component {
                 <div className='text-xl md:text-5xl mb-2'>
                     A<Typist startDelay={1000}  typingDelay={110} loop={true}  cursor={<span className='cursor'>{this.state.cursor}</span>}   >nonymous Chat Room <Typist.Delay ms={1500} /><Typist.Backspace count={18} /></Typist>
                 </div>
-                <p>
-                There is freedom of speech, but I cannot guarantee freedom after
-                speech. (Idi Amin)
-                </p>
                 <div className="mx-auto mt-8 max-w-xl sm:flex sm:gap-4">
                 <input
                     placeholder="Room Name"

@@ -24,7 +24,26 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
         RoomEvent.Connected,()=>{
             room.localParticipant.setMicrophoneEnabled(true)
         }
-    )
+    ).on(RoomEvent.AudioPlaybackStatusChanged, () => {
+        if (!room.canPlaybackAudio) {
+           const btn = document.getElementById("allowPlayBack");
+           if(!btn) return
+           btn.classList.remove("hidden")
+           // UI is necessary.
+           btn.onclick = () => {
+               // startAudio *must* be called in an click/tap handler.
+               room.startAudio().then(() => {
+                   // successful, UI can be removed now
+                   
+              btn.classList.add("animate__animated  animate__slideOutLeft")
+              setTimeout(()=>{
+                  btn.classList.add("hidden")
+                  btn.remove();
+              })
+            });
+          }
+        }
+      });
     let i = 0
     // useMemo(() => {
 
@@ -58,6 +77,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
 
     return (
         <div className='flex justify-center h-full w-full  mt-2'>
+            <button className="hidden" id="allowPlayBack">点击此按钮允许播放音频</button>
             <div className=' md:px-12  flex w-full md:w-3/4'>
                 {
                     participants.map((participant, key) => {

@@ -161,9 +161,7 @@ export default function Room() {
                 connectOptions={{ autoSubscribe: true }}
                 options={{ expWebAudioMix: { audioContext } }}
             >
-                {/* <div className='opacity-0'> */}
-                    <StartAudio label='点击此处同意播放音频'>点击此处同意播放音频</StartAudio>
-                {/* </div> */}
+                {/* <StartAudio className='animate__animated  animate__slideOutLeft' label='点击此处同意播放音频'>点击此处同意播放音频</StartAudio> */}
                 <WebAudioContext.Provider value={audioContext}>
                     <div className="flex h-full">
                             <MeetingPanel/>
