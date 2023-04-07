@@ -15,7 +15,7 @@ export function BottomBar() {
     <div className="flex px-2 w-screen h-full justify-between p-0 my-1 items-center   animate__animated  animate__fadeIn">
       <div className="flex h-full">
         <MicrophoneMuteButton />
-        <div className="w-[400] ">
+        <div className="w-[400]">
           <MicrophoneSelector />
         </div>
         <OptionPanel/>

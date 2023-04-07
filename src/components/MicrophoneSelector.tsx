@@ -18,11 +18,11 @@ export function MicrophoneSelector() {
     }, [devices]);
     const [actIdx, setActIdx] = useState<number>(0);
   return (
-    <div className="mx-2 flex flex-col items-center dropdown dropdown-top dropdown-end  relative overflow-hidden text-ellipsis">
+    <div className="mx-2 flex flex-col items-center dropdown dropdown-top dropdown-end  relative ">
         <label tabIndex={0} className="btn border-none bg-yellow-600 text-white hover:bg-yellow-800">{devices.length > 0 && devices[actIdx].label}</label>
-        <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-100 text-black">
+        <ul tabIndex={0} className=" bg-white dropdown-content menu p-2 shadow rounded-box w-100 text-black">
             {devices.map((m, k) => (
-            <li value={m.deviceId} key={k} onClick={
+            <li className="bg-white" value={m.deviceId} key={k} onClick={
                 ()=>{
                     roomContext.localParticipant.setMicrophoneEnabled(false);
                     roomContext.localParticipant.setMicrophoneEnabled(true, {

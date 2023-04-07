@@ -91,9 +91,9 @@ export default function TopBar() {
             >
               ✕
             </label>
-            <LocalRecorderComponent
+            {/* <LocalRecorderComponent
               recordingChange={recordingChange}
-            ></LocalRecorderComponent>
+            ></LocalRecorderComponent> */}
           </div>
         </div>
       </div>

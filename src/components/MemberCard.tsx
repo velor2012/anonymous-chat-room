@@ -1,6 +1,6 @@
 
-import { AudioTrack, ConnectionQualityIndicator, ParticipantContext, ParticipantName, TrackMutedIndicator, useMediaTrack } from "@livekit/components-react";
-import { Participant, Track } from "livekit-client";
+import { AudioTrack, ConnectionQualityIndicator, ParticipantContext, ParticipantContextIfNeeded, ParticipantName, TrackMutedIndicator, useConnectionQualityIndicator, useMediaTrack } from "@livekit/components-react";
+import { ConnectionQuality, Participant, Track } from "livekit-client";
 import AudioVisualizer from "./AudioVisualizer";
 import { strToRGB } from "@/tools/utils";
 import { useMemo, useState } from "react";
@@ -9,33 +9,47 @@ import { theme } from "@/tools/setting";
 export interface AudioVisualizerProps extends React.HTMLAttributes<SVGElement> {
     participant: Participant;
     isme: boolean,
-    delays: number[],
-    idx: number
 }
 
 export default function MemberCard({ participant, isme, ...props }: AudioVisualizerProps) {
     let { track } = useMediaTrack(Track.Source.Microphone, participant);
     let t: any = track?.mediaStream?.clone()
     let isMute = useState<boolean>(false)
+    const { quality } = useConnectionQualityIndicator({ participant: participant});
     const handleOnClicked = () => {
         isMute[1](!isMute[0])
     }
     const volume = useMemo(() => {
         return isMute[0] ? 0 : 1
     }, [isMute[0]])
+
+    function qualityToText(quality: ConnectionQuality): string {
+        switch (quality) {
+          case ConnectionQuality.Unknown:
+            return 'Unknown';
+          case ConnectionQuality.Poor:
+            return '差';
+          case ConnectionQuality.Good:
+            return '良好';
+          case ConnectionQuality.Excellent:
+            return '极佳';
+        }
+      }
+    
+
     return (
         
         <div className='m-2 rounded-xl  p-4 pb-2 pt-2 text-white  animate__animated  animate__zoomIn' style={{ backgroundColor: theme.color1, boxShadow:"rgba(57, 108, 124, 0.5) 0px 6px 18px 0px"}}>
             {isMute[0] || <AudioTrack volume={volume} source={Track.Source.Microphone} participant={participant}></AudioTrack>}
             
-            <ParticipantContext.Provider value={participant} key={participant.identity}>
+            <ParticipantContextIfNeeded  participant={participant}>
                 <div className='flex justify-around'>
                     <ParticipantName />
                     {isme && <span>(ME)</span>}
                 </div>
                 <div className=' divider my-0'></div>
                 <div className='flex justify-around'>
-                <div className="tooltip" data-tip={`延迟:${props.delays[props.idx]}`}>
+                <div className="tooltip" data-tip={`连接状态: ${qualityToText(quality)}`}>
                         <ConnectionQualityIndicator />
                     </div>
                     {!isme && 
@@ -52,7 +66,7 @@ export default function MemberCard({ participant, isme, ...props }: AudioVisuali
                     name={participant.identity}
                     muteState={participant.isMicrophoneEnabled}
                 ></AudioVisualizer>
-            </ParticipantContext.Provider>
+            </ParticipantContextIfNeeded>
         </div>
     );
 }

@@ -57,29 +57,31 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     useEffect(() => {
         setDelays(new Array(participants.length).fill(0))
     }, [participants.length])
-    useEffect(() => {
-        // var _this = this as any
-        if (process.env.PING_URL == undefined || process.env.PING_URL == "") return;
-        else {
-            console.log("set up")
-            if (loop) {
-                console.log("cleaning up");
-                clearInterval(loop);
-            }
-            setLoop(
-                setInterval(() => {
-                    // debugger
-                    if (participants.length > 0) {
-                        getServerLatency(process.env.PING_URL as string, (delay) => {
-                            // console.log(`lantency: ${delay}`)
-                            const t = new Array(participants.length).fill(0)
-                            t[0] = delay
-                            setDelays(t)
-                        })
-                    }
-                }, 5000))
-        }
-    }, [participants.length])
+
+    // 代码可能有问题，会造成许多定时器启动
+    // useEffect(() => {
+    //     // var _this = this as any
+    //     if (process.env.PING_URL == undefined || process.env.PING_URL == "") return;
+    //     else {
+    //         console.log("set up")
+    //         if (loop) {
+    //             console.log("cleaning up");
+    //             clearInterval(loop);
+    //         }
+    //         setLoop(
+    //             setInterval(() => {
+    //                 // debugger
+    //                 if (participants.length > 0) {
+    //                     getServerLatency(process.env.PING_URL as string, (delay) => {
+    //                         // console.log(`lantency: ${delay}`)
+    //                         const t = new Array(participants.length).fill(0)
+    //                         t[0] = delay
+    //                         setDelays(t)
+    //                     })
+    //                 }
+    //             }, 5000))
+    //     }
+    // }, [participants.length])
 
     return (
         <div className='flex justify-center h-full w-full  mt-2'>
@@ -98,7 +100,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
                         }
                         return (
                             <div className='w-full px-4 sm:px-0 sm:w-auto' key={key}>
-                                <MemberCard delays={delays} idx={key} participant={participant} isme={i == 1}></MemberCard>
+                                <MemberCard  participant={participant} isme={i == 1}></MemberCard>
                             </div>
                         )
                     })
