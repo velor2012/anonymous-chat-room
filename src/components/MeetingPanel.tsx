@@ -1,6 +1,6 @@
 
-import React, { HTMLAttributes, useEffect, useMemo, useState } from 'react';
-import { LocalParticipant, ParticipantEvent, RoomEvent, Track } from 'livekit-client';
+import React, { HTMLAttributes, MouseEventHandler, useEffect, useMemo, useState } from 'react';
+import { LocalParticipant, LogLevel, ParticipantEvent, RoomEvent, Track } from 'livekit-client';
 import MemberCard from "@/components/MemberCard"
 import {
     ParticipantContext, ConnectionQualityIndicator, useParticipants, ParticipantName, AudioTrack,
@@ -12,6 +12,8 @@ import {
 } from "@livekit/components-react";
 import { ChatCard } from './ChatCard';
 import { getServerLatency } from '@/tools/utils';
+import { log } from "@livekit/components-core"
+log.setDefaultLevel(LogLevel.warn)
 
 export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     const participants = useParticipants();
@@ -19,31 +21,35 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     const [delayme, setDelaysMe] = useState<number>(0)
     const [loop, setLoop] = useState<any>(null);
     const room = useRoomContext();
-    
+
     room.on(
-        RoomEvent.Connected,()=>{
+        RoomEvent.Connected, () => {
             room.localParticipant.setMicrophoneEnabled(true)
         }
     ).on(RoomEvent.AudioPlaybackStatusChanged, () => {
         if (!room.canPlaybackAudio) {
-           const btn = document.getElementById("allowPlayBack");
-           if(!btn) return
-           btn.classList.remove("hidden")
-           // UI is necessary.
-           btn.onclick = () => {
-               // startAudio *must* be called in an click/tap handler.
-               room.startAudio().then(() => {
-                   // successful, UI can be removed now
-                   
-              btn.classList.add("animate__animated  animate__slideOutLeft")
-              setTimeout(()=>{
-                  btn.classList.add("hidden")
-                  btn.remove();
-              })
-            });
-          }
+            log.warn("can't playback audio")
+            const btn = document.getElementById("allowPlayBack");
+            if (!btn) return
+            btn.onclick = () => {
+                if(room.canPlaybackAudio) return
+                // startAudio *must* be called in an click/tap handler.
+                room.startAudio().then(() => {
+                    log.warn("start playback audio")
+                    // successful, UI can be removed now
+                    if (btn) {
+                        btn.classList.add("animate__slideOutLeft")
+                        setTimeout(() => {
+                            btn.classList.add("hidden")
+                            btn.remove()
+                        }, 500)
+                    }
+                });
+            }
+            btn.classList.remove("hidden")
         }
-      });
+    });
+
     let i = 0
     // useMemo(() => {
 
@@ -53,10 +59,10 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     }, [participants.length])
     useEffect(() => {
         // var _this = this as any
-        if (process.env.PING_URL == undefined || process.env.PING_URL == "")  return;
-        else{
+        if (process.env.PING_URL == undefined || process.env.PING_URL == "") return;
+        else {
             console.log("set up")
-            if(loop){
+            if (loop) {
                 console.log("cleaning up");
                 clearInterval(loop);
             }
@@ -65,7 +71,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
                     // debugger
                     if (participants.length > 0) {
                         getServerLatency(process.env.PING_URL as string, (delay) => {
-                            console.log(`lantency: ${delay}`)
+                            // console.log(`lantency: ${delay}`)
                             const t = new Array(participants.length).fill(0)
                             t[0] = delay
                             setDelays(t)
@@ -77,7 +83,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
 
     return (
         <div className='flex justify-center h-full w-full  mt-2'>
-            <button className="hidden" id="allowPlayBack">点击此按钮允许播放音频</button>
+            <button className="btn hidden animate__animated bg-yellow-600 text-white  hover:bg-yellow-800 border-none" id="allowPlayBack">点击此按钮允许播放音频</button>
             <div className=' md:px-12  flex w-full md:w-3/4'>
                 {
                     participants.map((participant, key) => {
