@@ -34,7 +34,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     }, [participants.length])
     useEffect(() => {
         // var _this = this as any
-        if (process.env.PING_URL == undefined)  return;
+        if (process.env.PING_URL == undefined || process.env.PING_URL == "")  return;
         else{
             console.log("set up")
             if(loop){
