@@ -15,7 +15,7 @@ You can try an online demo right now at <https://chat.cwy666.eu.org/>, This demo
 - [ ] Latency calculate--Current implementation is very simple
 - [ ] Room password setting
 - [ ] Multiple entry points on the front side (polling a set of available apikeys) to improve reliability
-- [ ] Optimized for mobile - <u>works</u> | good | excellent 🚩
+- [ ] Optimized for mobile - **works** | good | excellent 🚩
 
 (🚩means  indicate  the current ongoing)
 
