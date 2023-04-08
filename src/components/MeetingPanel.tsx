@@ -46,7 +46,16 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
                     }
                 });
             }
-            btn.classList.remove("hidden")
+            // 防止刚显示按钮，就突然可以播放了
+            const timer = window.setTimeout(() => {
+                if(!room.canPlaybackAudio) btn.classList.remove("hidden")
+            }, 2000)
+            
+            return  () => {
+                console.log("cleaning timer");
+                clearTimeout(timer)
+            } 
+            
         }
     });
 
@@ -58,18 +67,17 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
         setDelays(new Array(participants.length).fill(0))
     }, [participants.length])
 
-    // 代码可能有问题，会造成许多定时器启动
+    // // 代码可能有问题，会造成许多定时器启动
     // useEffect(() => {
     //     // var _this = this as any
     //     if (process.env.PING_URL == undefined || process.env.PING_URL == "") return;
     //     else {
     //         console.log("set up")
-    //         if (loop) {
-    //             console.log("cleaning up");
-    //             clearInterval(loop);
-    //         }
-    //         setLoop(
-    //             setInterval(() => {
+    //         // if (loop) {
+    //         //     console.log("cleaning up");
+    //         //     clearInterval(loop);
+    //         // }
+    //         const timer =  window.setInterval(() => {
     //                 // debugger
     //                 if (participants.length > 0) {
     //                     getServerLatency(process.env.PING_URL as string, (delay) => {
@@ -79,7 +87,11 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     //                         setDelays(t)
     //                     })
     //                 }
-    //             }, 5000))
+    //             }, 5000)
+    //         return () => {
+    //             console.log("cleaning up");
+    //             clearInterval(timer);
+    //             };
     //     }
     // }, [participants.length])
 

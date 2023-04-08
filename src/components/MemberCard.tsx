@@ -1,9 +1,9 @@
 
-import { AudioTrack, ConnectionQualityIndicator, ParticipantContext, ParticipantContextIfNeeded, ParticipantName, TrackMutedIndicator, useConnectionQualityIndicator, useMediaTrack } from "@livekit/components-react";
+import { AudioTrack, ConnectionQualityIndicator, ParticipantContext, ParticipantContextIfNeeded, ParticipantName, TrackMutedIndicator, useConnectionQualityIndicator, useMediaTrack, useRoomContext } from "@livekit/components-react";
 import { ConnectionQuality, Participant, Track } from "livekit-client";
 import AudioVisualizer from "./AudioVisualizer";
 import { strToRGB } from "@/tools/utils";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { theme } from "@/tools/setting";
 
 export interface AudioVisualizerProps extends React.HTMLAttributes<SVGElement> {
@@ -13,7 +13,8 @@ export interface AudioVisualizerProps extends React.HTMLAttributes<SVGElement> {
 
 export default function MemberCard({ participant, isme, ...props }: AudioVisualizerProps) {
     let { track } = useMediaTrack(Track.Source.Microphone, participant);
-    let t: any = track?.mediaStream?.clone()
+    // let t: any = track?.mediaStream?.clone()
+    const [ad, setAd] = useState<any>(undefined);
     let isMute = useState<boolean>(false)
     const { quality } = useConnectionQualityIndicator({ participant: participant});
     const handleOnClicked = () => {
@@ -40,7 +41,7 @@ export default function MemberCard({ participant, isme, ...props }: AudioVisuali
     return (
         
         <div className='m-2 rounded-xl  p-4 pb-2 pt-2 text-white  animate__animated  animate__zoomIn' style={{ backgroundColor: theme.color1, boxShadow:"rgba(57, 108, 124, 0.5) 0px 6px 18px 0px"}}>
-            {isMute[0] || <AudioTrack volume={volume} source={Track.Source.Microphone} participant={participant}></AudioTrack>}
+            {isMute[0] || isme || <AudioTrack volume={volume} source={Track.Source.Microphone} participant={participant}></AudioTrack>}
             
             <ParticipantContextIfNeeded  participant={participant}>
                 <div className='flex justify-around'>
@@ -62,7 +63,7 @@ export default function MemberCard({ participant, isme, ...props }: AudioVisuali
                     {/* <TrackMutedIndicator source={Track.Source.Microphone}></TrackMutedIndicator> */}
                 </div>
                 <AudioVisualizer
-                    audio={t}
+                    audio={track?.mediaStream?.clone()}
                     name={participant.identity}
                     muteState={participant.isMicrophoneEnabled}
                 ></AudioVisualizer>
