@@ -82,7 +82,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
                     })
                 }
             </div >
-                <div id="chatcard" className='hidden h-4/5 w-full sm:w-[600px] sm:mr-12   fixed sm:static   '>
+                <div id="chatcard" className='hidden h-2/3 sm:h-4/5 w-full sm:w-[600px] sm:mr-12   fixed sm:static   '>
                     <div className='px-2 mx-2 sm:mx-0  h-full  animate__animated animate__fadeIn sm:block rounded-xl  shadow-md'   style={{ border: "1px solid #eaeefb", backgroundColor: theme.color1, boxShadow:"rgba(57, 108, 124, 0.5) 0px 6px 18px 0px"}}>
                         <ChatCard />
                     </div>
