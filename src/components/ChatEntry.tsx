@@ -50,7 +50,7 @@ export function ChatEntry({ entry, messageFormatter, ...props }: ChatEntryProps)
                 {entry.from?.identity}
                 {/* <time className="text-xs opacity-50">12:46</time> */}
             </div>
-                <div className="chat-bubble  chat-bubble-info">{formattedMessage}</div>
+                <span className="chat-bubble  chat-bubble-info" style={{whiteSpace:"pre-wrap"}}>{formattedMessage}</span>
         </div>
       </li>
     )

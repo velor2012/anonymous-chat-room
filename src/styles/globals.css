@@ -15,3 +15,11 @@ body{
 .btn:hover{
     cursor: pointer;
 }
+textarea::-webkit-scrollbar { width: 0!important }
+
+/* #emojiSVG > #emojiPicker{
+    display: none;
+} */
+/* #emojiSVG:active > #emojiPicker{
+    display: block;
+} */

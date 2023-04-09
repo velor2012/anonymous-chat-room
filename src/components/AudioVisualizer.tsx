@@ -2,9 +2,10 @@ import { useEffect, useRef } from "react"
 
 import { nameToColor, strToRGB } from "@/tools/utils"
 import { theme } from "@/tools/setting"
+import { Track } from "livekit-client"
 
 interface Audio {
-  audio?: MediaStream
+  track?: Track
   name: string
   muteState: boolean | false
 }
@@ -12,11 +13,14 @@ interface Audio {
 export default function AudioVisualizer(props: Audio) {
   const analyserCanvas = useRef(null)
   useEffect(() => {
+    if(props.track == undefined) return
+    const audio = props.track.mediaStream 
     const color = nameToColor(props.name)
-    if (props.audio === undefined) return
+    if (audio === undefined) return
     const audioCtx = new AudioContext()
+    if (!audio.active) return
     const analyser = audioCtx.createAnalyser()
-    const audioSrc = audioCtx.createMediaStreamSource(props.audio)
+    const audioSrc = audioCtx.createMediaStreamSource(audio)
     audioSrc.connect(analyser)
     analyser.fftSize = 256
     const bufferLength = analyser.frequencyBinCount
@@ -63,7 +67,7 @@ export default function AudioVisualizer(props: Audio) {
       }
     }
     draw()
-  }, [props.audio, props.name])
+  }, [props.track, props.name])
 
   return (
     <div className="visualizer mx-auto mt-4">

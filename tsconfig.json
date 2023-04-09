@@ -20,6 +20,6 @@
       "@/public/*": ["./public/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/ChatEntry.module.css", "src/components/AudioRecordPolyFill.js", "src/components/AudioRecordPolyFill.js", "src/components/Recoder.tsx", "src/components/Recoder.tsx", "src/components/func/LocalRecoder.jser.jsrc/components/func/LocalRecoder.jsRecoder.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/ChatEntry.module.css", "src/components/AudioRecordPolyFill.js", "src/components/AudioRecordPolyFill.js", "src/components/Recoder.tsx", "src/components/Recoder.tsx", "src/components/func/LocalRecoder.jser.jsrc/components/func/LocalRecoder.jsRecoder.js", "src/pages/[roomId]/index.tsx", "src/pages/[roomId]/index.tsx", "src/pages/[roomId]/index.tsx.v2", "src/pages/[roomId]/index.tsx.v2"],
   "exclude": ["node_modules"]
 }

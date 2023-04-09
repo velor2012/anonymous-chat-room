@@ -13,15 +13,14 @@ import {
 import { ChatCard } from './ChatCard';
 import { getServerLatency } from '@/tools/utils';
 import { log } from "@livekit/components-core"
+import { theme } from '@/tools/setting';
 log.setDefaultLevel(LogLevel.warn)
 
 export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     const participants = useParticipants();
-    const [delays, setDelays] = useState<number[]>([])
-    const [delayme, setDelaysMe] = useState<number>(0)
-    const [loop, setLoop] = useState<any>(null);
     const room = useRoomContext();
-
+    room.removeAllListeners(RoomEvent.Connected)
+    room.removeAllListeners(RoomEvent.AudioPlaybackStatusChanged)
     room.on(
         RoomEvent.Connected, () => {
             room.localParticipant.setMicrophoneEnabled(true)
@@ -60,48 +59,13 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     });
 
     let i = 0
-    // useMemo(() => {
-
-    // }, [participants.length])
-    useEffect(() => {
-        setDelays(new Array(participants.length).fill(0))
-    }, [participants.length])
-
-    // // 代码可能有问题，会造成许多定时器启动
-    // useEffect(() => {
-    //     // var _this = this as any
-    //     if (process.env.PING_URL == undefined || process.env.PING_URL == "") return;
-    //     else {
-    //         console.log("set up")
-    //         // if (loop) {
-    //         //     console.log("cleaning up");
-    //         //     clearInterval(loop);
-    //         // }
-    //         const timer =  window.setInterval(() => {
-    //                 // debugger
-    //                 if (participants.length > 0) {
-    //                     getServerLatency(process.env.PING_URL as string, (delay) => {
-    //                         // console.log(`lantency: ${delay}`)
-    //                         const t = new Array(participants.length).fill(0)
-    //                         t[0] = delay
-    //                         setDelays(t)
-    //                     })
-    //                 }
-    //             }, 5000)
-    //         return () => {
-    //             console.log("cleaning up");
-    //             clearInterval(timer);
-    //             };
-    //     }
-    // }, [participants.length])
 
     return (
-        <div className='flex justify-center h-full w-full  mt-2'>
+        <div className='flex h-full w-full  mt-2'>
             <button className="btn hidden animate__animated bg-yellow-600 text-white  hover:bg-yellow-800 border-none" id="allowPlayBack">点击此按钮允许播放音频</button>
-            <div className=' md:px-12  flex w-full md:w-3/4'>
+            <div className=' md:px-12 flex-warp  flex w-full md:w-3/4'>
                 {
                     participants.map((participant, key) => {
-
                         let name = ""
                         if (i == 0) name += "(ME)"
                         i++;
@@ -118,9 +82,39 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
                     })
                 }
             </div >
-            <div className='hidden sm:block rounded-xl overflow-hidden mr-12  text-center backdrop-blur-lg bg-transparent shadow-md' style={{ width: "600px", border: "1px solid #eaeefb", boxShadow: "rgba(57, 108, 124, 0.5) 0px 6px 18px 0px" }}>
-                <ChatCard />
+                <div id="chatcard" className='hidden h-4/5 w-full sm:w-[600px] sm:mr-12   fixed sm:static   '>
+                    <div className='px-2 mx-2 sm:mx-0  h-full  animate__animated animate__fadeIn sm:block rounded-xl  shadow-md'   style={{ border: "1px solid #eaeefb", backgroundColor: theme.color1, boxShadow:"rgba(57, 108, 124, 0.5) 0px 6px 18px 0px"}}>
+                        <ChatCard />
+                    </div>
+                </div>
+            
+            <div>
+            {
+                floatButton({handleClick: ()=>{
+                    const chatcard = document.getElementById("chatcard")
+                    if(!chatcard) return
+                    if(chatcard.classList.contains("hidden")) {
+                        chatcard.classList.remove("hidden")
+                    }else{
+                        chatcard.classList.add("hidden")
+                    }
+                }})
+            }
             </div>
         </div>
     );
+}
+
+type PropButton = {
+    handleClick: MouseEventHandler<HTMLDivElement>
+}
+
+export function floatButton({handleClick}: PropButton) {
+    return (
+        <div className="fixed  z-50 bottom-[8%] right-0 m-4" onClick={handleClick}>
+            <button className="btn btn-circle btn-lg bg-yellow-600 text-white  hover:bg-yellow-800 border-none">
+                <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2688" width="32" height="32"><path d="M512 64c259.2 0 469.333333 200.576 469.333333 448s-210.133333 448-469.333333 448a484.48 484.48 0 0 1-232.725333-58.88l-116.394667 50.645333a42.666667 42.666667 0 0 1-58.517333-49.002666l29.76-125.013334C76.629333 703.402667 42.666667 611.477333 42.666667 512 42.666667 264.576 252.8 64 512 64z m0 64C287.488 128 106.666667 300.586667 106.666667 512c0 79.573333 25.557333 155.434667 72.554666 219.285333l5.525334 7.317334 18.709333 24.192-26.965333 113.237333 105.984-46.08 27.477333 15.018667C370.858667 878.229333 439.978667 896 512 896c224.512 0 405.333333-172.586667 405.333333-384S736.512 128 512 128z m-157.696 341.333333a42.666667 42.666667 0 1 1 0 85.333334 42.666667 42.666667 0 0 1 0-85.333334z m159.018667 0a42.666667 42.666667 0 1 1 0 85.333334 42.666667 42.666667 0 0 1 0-85.333334z m158.997333 0a42.666667 42.666667 0 1 1 0 85.333334 42.666667 42.666667 0 0 1 0-85.333334z" fill="white" p-id="2689"></path></svg>
+            </button>
+        </div>
+    )
 }

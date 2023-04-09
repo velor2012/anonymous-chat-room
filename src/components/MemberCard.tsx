@@ -63,7 +63,7 @@ export default function MemberCard({ participant, isme, ...props }: AudioVisuali
                     {/* <TrackMutedIndicator source={Track.Source.Microphone}></TrackMutedIndicator> */}
                 </div>
                 <AudioVisualizer
-                    audio={track?.mediaStream?.clone()}
+                    track={track}
                     name={participant.identity}
                     muteState={participant.isMicrophoneEnabled}
                 ></AudioVisualizer>
