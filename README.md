@@ -11,13 +11,13 @@ You can try an online demo right now at <https://chat.cwy666.eu.org/>, This demo
 - [x] Easy to deploy, You can use the free service of  [livekit cloud ](https://cloud.livekit.io) directly, without using your own server
 - [x] Voice chat in room
 - [x] Text chat in room, can send text or emoji
-  - [ ] More custom emoji support
+  - [x] More custom emoji support
   - [ ] More message types, including images, videos
 - [x] Browser-based speaker, microphone, screen recording(Perfectly support **Chrome**, **Edge**, does **not** support speaker recording on **safari**)
 - [ ] Latency calculate--Current implementation is very simple
-- [ ] Room password setting
+- [ ] Room password setting 🚩
 - [ ] Multiple entry points on the front side (polling a set of available apikeys) to improve reliability
-- [ ] Optimized for mobile - **works** | good | excellent 🚩
+- [ ] Optimized for mobile - works | **good** | excellent 
 
 (🚩means  indicate  the current ongoing)
 
