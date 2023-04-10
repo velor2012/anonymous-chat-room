@@ -3,9 +3,9 @@ import React, { memo } from 'react';
 import { useRoomContext, MessageFormatter, useChat, useLocalParticipant } from '@livekit/components-react';
 import { ChatEntry } from '@/components/ChatEntry'
 import { sendMessage } from '@livekit/components-core'
-import { TextEncoder } from 'util';
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+import { DataPacket_Kind } from 'livekit-client';
 /**
  * @internal
  */
@@ -46,7 +46,7 @@ export const ChatCard: React.FC = memo(({ ...props }: ChatProps) => {
     const inputRef = React.useRef<HTMLTextAreaElement>(null);
     const ulRef = React.useRef<HTMLUListElement>(null);
     const { send, chatMessages, isSending } = useChat();
-    console.log("chatcard update")
+    const {localParticipant} = useLocalParticipant();
     async function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
         if (inputRef.current && inputRef.current.value.trim() !== '') {
@@ -85,6 +85,39 @@ export const ChatCard: React.FC = memo(({ ...props }: ChatProps) => {
             inp.focus();
         }
     }
+    // 发送图片的数据回调
+    // const handleAdd = (e: React.MouseEvent) => {
+    //     debugger
+    //     if(document){
+    //         const dom :any = document.getElementById("fileSelect")
+    //         if(!dom) return
+    //         dom.onchange=function(){         
+    //             const reader = new FileReader();
+    //             var fil=dom.files as Blob[];
+    //             if(fil[0].size > 2*1024*1024) {
+    //                 alert("图片大小不能超过2M");
+    //                 return;
+    //             }
+    //             reader.readAsDataURL(fil[0]);
+    //             reader.onload = async function(event: any) {
+    //                 const base64Data = event.target.result;
+    //                 // 在这里调用上传图片的函数，传入base64Data参数即可
+    //                 console.log(base64Data);
+    //                 if(send){
+    //                     const encoder = new TextEncoder()
+    //                 // publishData takes in a Uint8Array, so we need to convert it
+    //                     const data = encoder.encode(base64Data);
+
+
+    //                     // publish reliable data to a set of participants
+    //                     localParticipant.publishData(data, DataPacket_Kind.RELIABLE, ['participant_sid'])
+    //                     // await send(base64Data);
+    //                 }
+    //             };
+    //         }
+    //         dom.click()
+    //     }
+    // }
     const handleEmojiClick = (e: React.MouseEvent) => {
         const dom = document.getElementById("emojiPicker");
         if(dom){
@@ -125,18 +158,19 @@ export const ChatCard: React.FC = memo(({ ...props }: ChatProps) => {
             {/* <form className="lk-chat-form flex text-center items-center" onSubmit={handleSubmit}> */}
             <div className="grid grid-cols-12 gap-0 w-full">
                 <textarea
-                    className="col-span-8 mr-1 lk-form-control lk-chat-form-input  textarea-lg whitespace-pre-wrap rounded-md border-gray-200 bg-white p-3 text-gray-700 shadow-sm transition focus:border-white focus:outline-none focus:ring focus:ring-yellow-400"
+                    className="col-span-10 mr-1 lk-form-control lk-chat-form-input  textarea-lg whitespace-pre-wrap rounded-md border-gray-200 bg-white p-3 text-gray-700 shadow-sm transition focus:border-white focus:outline-none focus:ring focus:ring-yellow-400"
                     disabled={isSending}
                     ref={inputRef}
                     placeholder="Enter a message..."
                     rows={1}
                     style={{ lineHeight: "1.5rem", resize: "none" }}
                 />
-                <div className='ml-1 col-span-4 text-end flex justify-around items-center'>
+                <div className='ml-1 col-span-2 text-end flex justify-around items-center'>
+                    {/* 发送图片被限制64kb，需要自定义发送接收消息接口，以后再说
                     <div className=' bg-transparent rounded-[999px] hover:cursor-pointer hover:bg-white hover:bg-opacity-10  w-[36px] h-[36px] flex justify-center items-center'>
-                        <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3809" width="36" height="36">
-                            <path d="M512 832c-176.448 0-320-143.552-320-320S335.552 192 512 192s320 143.552 320 320-143.552 320-320 320m0-704C300.256 128 128 300.256 128 512s172.256 384 384 384 384-172.256 384-384S723.744 128 512 128" fill="white" p-id="3810"></path><path d="M683.936 470.944H544v-139.968a32 32 0 1 0-64 0v139.968h-139.936a32 32 0 0 0 0 64H480v139.968a32 32 0 0 0 64 0v-139.968h139.968a32 32 0 0 0 0-64" fill="white" p-id="3811"></path></svg>
-                    </div>
+                        <input  type="file" id="fileSelect" name="file"/>
+                        <svg  onClick={handleAdd} className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2628" width="28" height="28"><path d="M928 896H96c-53.02 0-96-42.98-96-96V224c0-53.02 42.98-96 96-96h832c53.02 0 96 42.98 96 96v576c0 53.02-42.98 96-96 96zM224 240c-61.856 0-112 50.144-112 112s50.144 112 112 112 112-50.144 112-112-50.144-112-112-112zM128 768h768V544l-175.03-175.03c-9.372-9.372-24.568-9.372-33.942 0L416 640l-111.03-111.03c-9.372-9.372-24.568-9.372-33.942 0L128 672v96z" p-id="2629" fill="#ffffff"></path></svg>
+                    </div> */}
                     <div id="emojiSVG" className=' z-[999] relative bg-transparent rounded-[999px] hover:cursor-pointer hover:bg-white hover:bg-opacity-10  w-[36px] h-[36px] flex justify-center items-center'>
                         <svg className="icon" onClick={handleEmojiClick}  viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5020" width="36" height="36"><path d="M512 832c-176.448 0-320-143.552-320-320S335.552 192 512 192s320 143.552 320 320-143.552 320-320 320m0-704C300.256 128 128 300.256 128 512s172.256 384 384 384 384-172.256 384-384S723.744 128 512 128" fill="white" p-id="5021"></path><path d="M700.64 580.288a32 32 0 0 0-43.712 11.68A160.608 160.608 0 0 1 518.304 672a160.576 160.576 0 0 1-138.592-80 32 32 0 0 0-55.424 32.032 224.896 224.896 0 0 0 194.016 112 224.768 224.768 0 0 0 194.016-112 32 32 0 0 0-11.68-43.744M384 512a32 32 0 0 0 32-32v-96a32 32 0 0 0-64 0v96a32 32 0 0 0 32 32M640 512a32 32 0 0 0 32-32v-96a32 32 0 0 0-64 0v96a32 32 0 0 0 32 32" fill="white" p-id="5022"></path></svg>
                         <div id="emojiPicker" className="absolute hidden right-[50%] bottom-full top-auto">

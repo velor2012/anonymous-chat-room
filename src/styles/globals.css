@@ -17,9 +17,6 @@ body{
 }
 textarea::-webkit-scrollbar { width: 0!important }
 
-/* #emojiSVG > #emojiPicker{
+/* #fileSelect{
     display: none;
-} */
-/* #emojiSVG:active > #emojiPicker{
-    display: block;
 } */

@@ -20,7 +20,7 @@ export function BottomBar() {
         </div>
         <OptionPanel/>
       </div>
-      <div className="pr-2 flex hidden sm:hidden md:block">
+      <div className="pr-2 hidden md:block">
         <PoweredByLiveKit />
       </div>
     </div>
