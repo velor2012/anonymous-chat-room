@@ -57,15 +57,6 @@ export const ChatCard: React.FC = memo(({ ...props }: ChatProps) => {
             }
         }
     }
-
-    React.useEffect(() => {
-        if (inputRef.current && send) {
-            const inp = inputRef.current
-            inp.removeEventListener("keyup", handleAltEnter as any);
-            inp.addEventListener("keyup", handleAltEnter as any);
-
-        }
-    }, [send])
     React.useEffect(() => {
         if (ulRef) {
             ulRef.current?.scrollTo({ top: ulRef.current.scrollHeight });
@@ -164,6 +155,11 @@ export const ChatCard: React.FC = memo(({ ...props }: ChatProps) => {
                     placeholder="Enter a message..."
                     rows={1}
                     style={{ lineHeight: "1.5rem", resize: "none" }}
+                    onKeyUp={e => {
+                        if(e.key === 'Enter')
+                           e.preventDefault()
+                           handleAltEnter(e)
+                        }}
                 />
                 <div className='ml-1 col-span-2 text-end flex justify-around items-center'>
                     {/* 发送图片被限制64kb，需要自定义发送接收消息接口，以后再说
