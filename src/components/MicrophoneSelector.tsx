@@ -2,13 +2,15 @@ import {
   useMediaDeviceSelect,
   useRoomContext,
 } from "@livekit/components-react";
-import { defaultConfig } from "@/tools/utils";
-import { useMemo, useState } from "react";
+import { defaultConfig, getLocalStore } from "@/tools/utils";
+import { useEffect, useMemo, useState } from "react";
+import { MyConfig } from "@/types/global";
 
 export function MicrophoneSelector() {
   const roomContext = useRoomContext();
   const { devices, activeDeviceId, setActiveMediaDevice } =
     useMediaDeviceSelect({ kind: "audioinput", room: roomContext });
+    const [conf, setConf] = useState<MyConfig | null>(null);
     const deviceId2label = useMemo(() => {
         const map = new Map<string, string>();
         devices.forEach((d) => {
@@ -17,6 +19,15 @@ export function MicrophoneSelector() {
         return map;
     }, [devices]);
     const [actIdx, setActIdx] = useState<number>(0);
+
+    useEffect(() => {
+        const st = getLocalStore()
+        if(st!=null){
+            const cf = st.getItem("config")
+            if(cf != null || cf != undefined) setConf(JSON.parse(cf))
+        }
+    },[]);
+
   return (
     <div className="mx-2 flex flex-col items-center dropdown dropdown-top dropdown-end  relative ">
         <label tabIndex={0} className="btn border-none bg-yellow-600 text-white hover:bg-yellow-800">{devices.length > 0 && devices[actIdx].label}</label>
@@ -24,10 +35,15 @@ export function MicrophoneSelector() {
             {devices.map((m, k) => (
             <li className="bg-white" value={m.deviceId} key={k} onClick={
                 ()=>{
+                    debugger
                     roomContext.localParticipant.setMicrophoneEnabled(false);
+                    let cf = defaultConfig
+                    if (conf != null ){
+                        cf = conf
+                    }
                     roomContext.localParticipant.setMicrophoneEnabled(true, {
                         deviceId:m.deviceId,
-                        ...defaultConfig
+                        ...cf
                     });
                     // setActiveMediaDevice(m.deviceId);
                     setActIdx(k)

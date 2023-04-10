@@ -31,7 +31,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
             const btn = document.getElementById("allowPlayBack");
             if (!btn) return
             btn.onclick = () => {
-                if(room.canPlaybackAudio) return
+                if (room.canPlaybackAudio) return
                 // startAudio *must* be called in an click/tap handler.
                 room.startAudio().then(() => {
                     log.warn("start playback audio")
@@ -47,59 +47,63 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
             }
             // 防止刚显示按钮，就突然可以播放了
             const timer = window.setTimeout(() => {
-                if(!room.canPlaybackAudio) btn.classList.remove("hidden")
+                if (!room.canPlaybackAudio) btn.classList.remove("hidden")
             }, 2000)
-            
-            return  () => {
+
+            return () => {
                 console.log("cleaning timer");
                 clearTimeout(timer)
-            } 
-            
+            }
+
         }
     });
 
     let i = 0
 
     return (
-        <div className='flex h-full w-full  mt-2'>
-            <button className="btn hidden animate__animated bg-yellow-600 text-white  hover:bg-yellow-800 border-none" id="allowPlayBack">点击此按钮允许播放音频</button>
-            <div className=' md:px-12 flex-warp  flex w-full md:w-3/4'>
-                {
-                    participants.map((participant, key) => {
-                        let name = ""
-                        if (i == 0) name += "(ME)"
-                        i++;
-                        // let { track } = useMediaTrack(Track.Source.Microphone, participant);
-                        // let t : any= track?.mediaStream?.clone()
-                        if (participant == undefined || participant.identity == "") {
-                            return <div key={key} ></div>
-                        }
-                        return (
-                            <div className='w-full px-4 sm:px-0 sm:w-auto' key={key}>
-                                <MemberCard  participant={participant} isme={i == 1}></MemberCard>
-                            </div>
-                        )
-                    })
-                }
-            </div >
-                <div id="chatcard" className='hidden h-2/3 sm:h-4/5 w-full sm:w-[600px] sm:mr-12   fixed sm:static   '>
-                    <div className='px-2 mx-2 sm:mx-0  h-full  animate__animated animate__fadeIn sm:block rounded-xl  shadow-md'   style={{ border: "1px solid #eaeefb", backgroundColor: theme.color1, boxShadow:"rgba(57, 108, 124, 0.5) 0px 6px 18px 0px"}}>
+        <div className="h-full flex w-full">
+            <div className='flex mx-2 w-full flex-wrap  mt-2'>
+                <button className="btn hidden animate__animated bg-yellow-600 text-white  hover:bg-yellow-800 border-none" id="allowPlayBack">点击此按钮允许播放音频</button>
+                <div className=' md:px-12 flex-wrap  flex w-full sm:w-2/3'>
+                    {
+                        participants.map((participant, key) => {
+                            let name = ""
+                            if (i == 0) name += "(ME)"
+                            i++;
+                            // let { track } = useMediaTrack(Track.Source.Microphone, participant);
+                            // let t : any= track?.mediaStream?.clone()
+                            if (participant == undefined || participant.identity == "") {
+                                return <div key={key} ></div>
+                            }
+                            return (
+                                <div className='w-full px-1 sm:px-4 sm:w-auto' key={key}>
+                                    <MemberCard participant={participant} isme={i == 1}></MemberCard>
+                                </div>
+                            )
+                        })
+                    }
+                </div >
+                <div id="chatcard" className='hidden h-2/3 sm:h-4/5 w-full sm:w-1/3   fixed sm:static   '>
+                    <div className='px-2 mx-2 sm:mx-0  h-full  animate__animated animate__fadeIn sm:block rounded-xl  shadow-md' style={{ border: "1px solid #eaeefb", backgroundColor: theme.color1, boxShadow: "rgba(57, 108, 124, 0.5) 0px 6px 18px 0px" }}>
                         <ChatCard />
                     </div>
                 </div>
-            
-            <div>
-            {
-                floatButton({handleClick: ()=>{
-                    const chatcard = document.getElementById("chatcard")
-                    if(!chatcard) return
-                    if(chatcard.classList.contains("hidden")) {
-                        chatcard.classList.remove("hidden")
-                    }else{
-                        chatcard.classList.add("hidden")
+
+                <div>
+                    {
+                        floatButton({
+                            handleClick: () => {
+                                const chatcard = document.getElementById("chatcard")
+                                if (!chatcard) return
+                                if (chatcard.classList.contains("hidden")) {
+                                    chatcard.classList.remove("hidden")
+                                } else {
+                                    chatcard.classList.add("hidden")
+                                }
+                            }
+                        })
                     }
-                }})
-            }
+                </div>
             </div>
         </div>
     );
@@ -109,7 +113,7 @@ type PropButton = {
     handleClick: MouseEventHandler<HTMLDivElement>
 }
 
-export function floatButton({handleClick}: PropButton) {
+export function floatButton({ handleClick }: PropButton) {
     return (
         <div className="fixed  z-50 bottom-[8%] right-0 m-4" onClick={handleClick}>
             <button className="btn btn-circle btn-lg bg-yellow-600 text-white  hover:bg-yellow-800 border-none">

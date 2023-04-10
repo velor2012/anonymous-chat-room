@@ -2,36 +2,33 @@ import { useEffect, useRef } from "react"
 
 import { nameToColor, strToRGB } from "@/tools/utils"
 import { theme } from "@/tools/setting"
-import { Track } from "livekit-client"
+import { LocalAudioTrack, Participant, RemoteAudioTrack, Track, createAudioAnalyser } from "livekit-client"
+import { useMediaTrack } from "@livekit/components-react"
 
 interface Audio {
-  track?: Track
-  name: string
-  muteState: boolean | false
+    participant:Participant
 }
 
 export default function AudioVisualizer(props: Audio) {
   const analyserCanvas = useRef(null)
+  let { track } = useMediaTrack(Track.Source.Microphone, props.participant);
+
   useEffect(() => {
-    if(props.track == undefined) return
-    const audio = props.track.mediaStream 
-    const color = nameToColor(props.name)
-    if (audio === undefined) return
-    const audioCtx = new AudioContext()
-    if (!audio.active) return
-    const analyser = audioCtx.createAnalyser()
-    const audioSrc = audioCtx.createMediaStreamSource(audio)
-    audioSrc.connect(analyser)
-    analyser.fftSize = 256
-    const bufferLength = analyser.frequencyBinCount
-    const dataArray = new Uint8Array(bufferLength)
-    analyser.getByteTimeDomainData(dataArray)
+    if (!track || !(track instanceof LocalAudioTrack || track instanceof RemoteAudioTrack)) {
+
+        return;
+      }
+
+    const { analyser, cleanup } = createAudioAnalyser(track, {
+        smoothingTimeConstant: 0.85,
+        fftSize: 64,
+      });
+
+      const bufferLength = analyser.frequencyBinCount
+      const dataArray = new Uint8Array(bufferLength)
 
     const canvas : any = analyserCanvas.current
     const canvasCtx = canvas.getContext("2d")
-
-    const g = color[1]
-    const b = color[2]
 
     const draw = () => {
       const WIDTH = canvas.width
@@ -61,17 +58,17 @@ export default function AudioVisualizer(props: Audio) {
         // }
         canvasCtx.fillStyle = `rgb(255,255,255)`
 
-        canvasCtx.fillRect(x, 40 - barHeight / 2, barWidth, barHeight)
+        canvasCtx.fillRect(x, 72 - barHeight / 2, barWidth, barHeight)
 
         x += barWidth + 2
       }
     }
     draw()
-  }, [props.track, props.name])
+  }, [track, track?.isMuted, props.participant.isMicrophoneEnabled, props.participant.isSpeaking])
 
   return (
-    <div className="visualizer mx-auto mt-4">
-      <canvas ref={analyserCanvas} className="h-12 w-4/5"></canvas>
+    <div className="visualizer mx-auto mt-2">
+      <canvas ref={analyserCanvas} className=" h-16 w-4/5"></canvas>
     </div>
   )
 }
