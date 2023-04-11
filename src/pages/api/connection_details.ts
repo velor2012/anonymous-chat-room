@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { lru } from "@/tools/setting";
 import livekitServer, {
     AccessToken,
     RoomServiceClient,
@@ -59,9 +60,16 @@ export default async function handler(
     let grant: livekitServer.VideoGrant = { room, roomJoin: true, canPublish: true, canSubscribe: true, roomAdmin: false };
     try{
         const participants = await roomService.listParticipants(room);
+        console.log(`set passwd for ${room}, passwd: ${lru.get(room)}`)
+        debugger
     }catch{
         // If room doesn't exist, user is room admin
         grant.roomAdmin = true;
+        // set no passwrd
+        if(lru.get(room)){
+            lru.delete(room)
+        }
+        console.log(`set passwd for ${room}`)
     }
     
     at.addGrant(grant);

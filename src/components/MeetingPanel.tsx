@@ -21,20 +21,21 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     const room = useRoomContext();
     room.removeAllListeners(RoomEvent.Connected)
     room.removeAllListeners(RoomEvent.AudioPlaybackStatusChanged)
+    console.log("MeetingPanel start")
     room.on(
         RoomEvent.Connected, () => {
             room.localParticipant.setMicrophoneEnabled(true)
         }
     ).on(RoomEvent.AudioPlaybackStatusChanged, () => {
         if (!room.canPlaybackAudio) {
-            log.warn("can't playback audio")
+            // log.warn("can't playback audio")
             const btn = document.getElementById("allowPlayBack");
             if (!btn) return
             btn.onclick = () => {
                 if (room.canPlaybackAudio) return
                 // startAudio *must* be called in an click/tap handler.
                 room.startAudio().then(() => {
-                    log.warn("start playback audio")
+                    // log.warn("start playback audio")
                     // successful, UI can be removed now
                     if (btn) {
                         btn.classList.add("animate__slideOutLeft")
@@ -48,10 +49,11 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
             // 防止刚显示按钮，就突然可以播放了
             const timer = window.setTimeout(() => {
                 if (!room.canPlaybackAudio) btn.classList.remove("hidden")
+                btn.click()
             }, 2000)
 
             return () => {
-                console.log("cleaning timer");
+                // console.log("cleaning timer");
                 clearTimeout(timer)
             }
 
@@ -61,10 +63,10 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     let i = 0
 
     return (
-        <div className="h-full flex w-full">
-            <div className='flex mx-2 w-full flex-wrap  mt-2'>
+        <div className="h-full w-full">
+            <div className='flex w-full flex-wrap justify-center sm:justify-normal mt-2'>
                 <button className="btn hidden animate__animated bg-yellow-600 text-white  hover:bg-yellow-800 border-none" id="allowPlayBack">点击此按钮允许播放音频</button>
-                <div className=' md:px-12 flex-wrap  flex w-full sm:w-2/3'>
+                <div className=' md:px-12 flex-wrap align-top flex w-3/4 sm:w-2/3 pt-2'>
                     {
                         participants.map((participant, key) => {
                             let name = ""
@@ -76,7 +78,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
                                 return <div key={key} ></div>
                             }
                             return (
-                                <div className='w-full px-1 sm:px-4 sm:w-auto' key={key}>
+                                <div className='w-full px-1 sm:px-4 sm:w-auto mb-2 h-fit' key={key}>
                                     <MemberCard participant={participant} isme={i == 1}></MemberCard>
                                 </div>
                             )

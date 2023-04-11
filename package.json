@@ -38,6 +38,7 @@
     "emoji-mart": "5.5.2",
     "livekit-client": "1.7.1",
     "livekit-server-sdk": "1.1.0",
+    "lru-cache": "9.0.1",
     "mic-speaker-recorder": "1.0.2",
     "multistreamsmixer": "1.2.2",
     "next": "13.2.4",

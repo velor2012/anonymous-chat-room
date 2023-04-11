@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RoomServiceClient } from "livekit-server-sdk";
-
+import { lru } from "@/tools/setting";
 export type RoomInfo = {
   num_participants: number;
 };

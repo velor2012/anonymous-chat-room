@@ -23,7 +23,6 @@ import { theme } from '@/tools/setting';
 export default function Room() {
     const [connectionDetails, setConnectionDetails] =
         useState<ConnectionDetails | null>(null);
-    const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [isCheckLocalStroe, setIsCheckLocalStroe] = useState<boolean>(false);
     const router = useRouter()
     // const [roomId, setRoomId] = useState<string>(router.query.roomId as string);
@@ -32,16 +31,6 @@ export default function Room() {
     let username= router.query.username as string | undefined
     const roomId = router.query.roomId as string
     const [store, setStore] = useState<Storage | null>(null);
-
-    useEffect(() => {
-        setAudioContext(new AudioContext());
-        return () => {
-            setAudioContext((prev) => {
-                prev?.close();
-                return null;
-            });
-        };
-    }, []);
 
     useEffect(() => {
         async function fetchData() {
@@ -98,7 +87,7 @@ export default function Room() {
         [roomId]
     );
 
-    if (!audioContext || !roomId || !isCheckLocalStroe) {
+    if (!roomId || !isCheckLocalStroe) {
         return (<div className='w-screen h-screen flex flex-col items-center justify-center pt-10'></div>);
     }
 
@@ -159,13 +148,12 @@ export default function Room() {
                 serverUrl={connectionDetails.ws_url}
                 connect={true}
                 connectOptions={{ autoSubscribe: true }}
-                options={{ expWebAudioMix: { audioContext } }}
+                // options={{ expWebAudioMix: { audioContext } }}
             >
-                <WebAudioContext.Provider value={audioContext}>
                     <div className="flex h-full">
                             <MeetingPanel/>
                     </div>
-                </WebAudioContext.Provider>
+
                 {/* <div className="fixed bottom-0  w-full flex justify-center items-center" style={{backgroundColor: "#5A9367"}}> */}
                 <div className="fixed bottom-0  w-full flex justify-center items-center border-t-2" style={{backgroundColor: theme.color3}}>
                     <BottomBar />
