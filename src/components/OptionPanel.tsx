@@ -7,7 +7,7 @@ type MyConfig = {
     noiseSuppression: boolean,
     autoGainControl: boolean,
 }
-
+// TODO需要在此页面添加设置密码的选项
 export function OptionPanel() {
     const [config, setConfig] = useState<MyConfig | null>(null);
     useEffect(() => {

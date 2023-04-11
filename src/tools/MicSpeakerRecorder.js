@@ -225,7 +225,7 @@ export default class MicSpeakerRecorder {
                 const audioMixedStream = audioMixer.getMixedStream();
                 tracks.push(...audioMixedStream.getTracks())
                 mixedStream = new MediaStream(tracks);
-            }
+            }else return
             // debugger
             let config =
             {

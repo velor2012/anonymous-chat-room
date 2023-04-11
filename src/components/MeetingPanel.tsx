@@ -21,7 +21,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
     const room = useRoomContext();
     room.removeAllListeners(RoomEvent.Connected)
     room.removeAllListeners(RoomEvent.AudioPlaybackStatusChanged)
-    console.log("MeetingPanel start")
+    // console.log("MeetingPanel start")
     room.on(
         RoomEvent.Connected, () => {
             room.localParticipant.setMicrophoneEnabled(true)
@@ -64,16 +64,14 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
 
     return (
         <div className="h-full w-full">
-            <div className='flex w-full flex-wrap justify-center sm:justify-normal mt-2'>
+            <div className='flex h-full w-full flex-wrap justify-center sm:justify-normal mt-2'>
                 <button className="btn hidden animate__animated bg-yellow-600 text-white  hover:bg-yellow-800 border-none" id="allowPlayBack">点击此按钮允许播放音频</button>
-                <div className=' md:px-12 flex-wrap align-top flex w-3/4 sm:w-2/3 pt-2'>
+                <div className=' md:px-12 flex-wrap align-top flex w-3/4 sm:w-2/3 pt-2' style={{alignContent: "start"}}>
                     {
                         participants.map((participant, key) => {
                             let name = ""
                             if (i == 0) name += "(ME)"
                             i++;
-                            // let { track } = useMediaTrack(Track.Source.Microphone, participant);
-                            // let t : any= track?.mediaStream?.clone()
                             if (participant == undefined || participant.identity == "") {
                                 return <div key={key} ></div>
                             }
@@ -85,7 +83,7 @@ export function MeetingPanel(props: HTMLAttributes<HTMLSpanElement>) {
                         })
                     }
                 </div >
-                <div id="chatcard" className='hidden h-2/3 sm:h-4/5 w-full sm:w-1/3   fixed sm:static   '>
+                <div id="chatcard" className='hidden h-2/3 sm:h-4/5 w-full sm:w-1/3 sm:pr-2  fixed sm:static   '>
                     <div className='px-2 mx-2 sm:mx-0  h-full  animate__animated animate__fadeIn sm:block rounded-xl  shadow-md' style={{ border: "1px solid #eaeefb", backgroundColor: theme.color1, boxShadow: "rgba(57, 108, 124, 0.5) 0px 6px 18px 0px" }}>
                         <ChatCard />
                     </div>

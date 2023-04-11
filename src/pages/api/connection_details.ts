@@ -5,6 +5,7 @@ import livekitServer, {
     AccessToken,
     RoomServiceClient,
 } from 'livekit-server-sdk';
+import { lruItem } from '@/types/global';
 
 export type ConnectionDetailsBody = {
     roomId: string;
@@ -60,7 +61,7 @@ export default async function handler(
     let grant: livekitServer.VideoGrant = { room, roomJoin: true, canPublish: true, canSubscribe: true, roomAdmin: false };
     try{
         const participants = await roomService.listParticipants(room);
-        console.log(`set passwd for ${room}, passwd: ${lru.get(room)}`)
+        console.log(`get passwd for ${room}, passwd: ${lru.get(room)}`)
         debugger
     }catch{
         // If room doesn't exist, user is room admin
@@ -69,7 +70,12 @@ export default async function handler(
         if(lru.get(room)){
             lru.delete(room)
         }
-        console.log(`set passwd for ${room}`)
+        const t: lruItem = {passwd: "", time: new Date().getTime()}
+        lru.set(room, t)
+        // for passwd debug
+        // console.log(`set passwd for ${room}`)
+        // const t2 = lru.get(room) as lruItem;
+        // console.log(`get passwd for ${room}, passwd: ${t2.passwd}`)
     }
     
     at.addGrant(grant);

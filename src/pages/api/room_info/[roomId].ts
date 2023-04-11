@@ -2,8 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RoomServiceClient } from "livekit-server-sdk";
 import { lru } from "@/tools/setting";
+import { lruItem } from "@/types/global";
 export type RoomInfo = {
   num_participants: number;
+  hasPasswd: boolean
 };
 
 type ErrorResponse = {
@@ -35,9 +37,12 @@ export default async function handler(
   const roomService = new RoomServiceClient(livekitHost, apiKey, apiSecret);
 
   try {
+    const l: (lruItem | undefined) = lru.get(roomId as string) as lruItem | undefined
+    // for passwd debug
+    // if(l) console.log(`get passwd for ${roomId}, passwd: ${l.passwd}`)
     const participants = await roomService.listParticipants(roomId as string);
-    return res.status(200).json({ num_participants: participants.length });
+    return res.status(200).json({ num_participants: participants.length, hasPasswd: (l && l.passwd !== "") as boolean });
   } catch(e) {
-    return res.status(200).json({ num_participants: 0 });
+    return res.status(200).json({ num_participants: 0, hasPasswd: false });
   }
 }

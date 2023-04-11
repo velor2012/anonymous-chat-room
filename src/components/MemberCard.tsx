@@ -13,15 +13,12 @@ export interface AudioVisualizerProps extends React.HTMLAttributes<SVGElement> {
 }
 
 export default function MemberCard({ participant, isme, ...props }: AudioVisualizerProps) {
-    console.log("render MemberCard")
+    // console.log("render MemberCard")
     let [isMute, setIsMute] = useState<boolean>(false)
     const { quality } = useConnectionQualityIndicator({ participant: participant});
     const handleOnClicked = () => {
         setIsMute(!isMute)
     }
-    // const volume = useMemo(() => {
-    //     return isMute[0] ? 0 : 1
-    // }, [isMute[0]])
 
     function qualityToText(quality: ConnectionQuality): string {
         switch (quality) {

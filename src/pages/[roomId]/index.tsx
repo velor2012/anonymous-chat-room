@@ -19,7 +19,7 @@ import { Room as LRoom } from 'livekit-client';
 import { MeetingPanel } from '@/components/MeetingPanel';
 import { getLocalStore } from '@/tools/utils';
 import { theme } from '@/tools/setting';
-
+// TODO需要在此页面验证密码
 export default function Room() {
     const [connectionDetails, setConnectionDetails] =
         useState<ConnectionDetails | null>(null);
@@ -52,7 +52,6 @@ export default function Room() {
             }
             if(cond == false && username != undefined && username != "" ){
                 try {
-                    // TODO unify this kind of pattern across examples, either with the `useToken` hook or an equivalent
                     const connectionDetails = await requestConnectionDetails(
                         username as string
                     );
@@ -104,7 +103,6 @@ export default function Room() {
                         submitText="Join Room"
                         onSubmit={async (username) => {
                             try {
-                                // TODO unify this kind of pattern across examples, either with the `useToken` hook or an equivalent
                                 const connectionDetails = await requestConnectionDetails(
                                     username
                                 );
@@ -151,7 +149,8 @@ export default function Room() {
                 // options={{ expWebAudioMix: { audioContext } }}
             >
                     <div className="flex h-full">
-                            <MeetingPanel/>
+                            {/* <MeetingPanel/> */}
+                            <AudioConference/>
                     </div>
 
                 {/* <div className="fixed bottom-0  w-full flex justify-center items-center" style={{backgroundColor: "#5A9367"}}> */}

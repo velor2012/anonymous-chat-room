@@ -5,7 +5,7 @@ import {
 import { defaultConfig, getLocalStore } from "@/tools/utils";
 import { useEffect, useMemo, useState } from "react";
 import { MyConfig } from "@/types/global";
-
+import { log } from "@livekit/components-core"
 export function MicrophoneSelector() {
   const roomContext = useRoomContext();
   const { devices, activeDeviceId, setActiveMediaDevice } =
@@ -35,7 +35,7 @@ export function MicrophoneSelector() {
             {devices.map((m, k) => (
             <li className="bg-white" value={m.deviceId} key={k} onClick={
                 ()=>{
-                    debugger
+                    log.warn("change mic to " + m.deviceId)
                     roomContext.localParticipant.setMicrophoneEnabled(false);
                     let cf = defaultConfig
                     if (conf != null ){
@@ -45,7 +45,7 @@ export function MicrophoneSelector() {
                         deviceId:m.deviceId,
                         ...cf
                     });
-                    // setActiveMediaDevice(m.deviceId);
+                    setActiveMediaDevice(m.deviceId);
                     setActIdx(k)
                 }
             }>
