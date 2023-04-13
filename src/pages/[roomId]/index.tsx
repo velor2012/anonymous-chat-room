@@ -149,8 +149,8 @@ export default function Room() {
                 // options={{ expWebAudioMix: { audioContext } }}
             >
                     <div className="flex h-full">
-                            {/* <MeetingPanel/> */}
-                            <AudioConference/>
+                             <MeetingPanel/>
+                            {/*<AudioConference/> */}
                     </div>
 
                 {/* <div className="fixed bottom-0  w-full flex justify-center items-center" style={{backgroundColor: "#5A9367"}}> */}
