@@ -1,42 +1,65 @@
-<a href="https://livekit.io/">
-  <img src="./.github/assets/livekit-mark.png" alt="LiveKit logo" width="100" height="100">
-</a>
+# What's it
+An Anonymous Chat Room Power By Livekit [livekit](https://livekit.io/) And [Next.js](https://nextjs.org/)
 
-# LiveKit Meet
+ENGLISH | [中文](./README-cn.md)
 
-<p>
-  <a href="https://meet.livekit.io"><strong>Try the demo</strong></a>
-  •
-  <a href="https://github.com/livekit/components-js">LiveKit Components</a>
-  •
-  <a href="https://docs.livekit.io/">LiveKit Docs</a>
-  •
-  <a href="https://livekit.io/cloud">LiveKit Cloud</a>
-  •
-  <a href="https://blog.livekit.io/">Blog</a>
-</p>
+## Online demo
 
-<br>
+You can try an online demo right now at <https://chat.cwy666.eu.org/>, This demo uses the free service of [livekit cloud ](https://cloud.livekit.io) as the backend and will stop automatically when the quota runs out.
 
-LiveKit Meet is an open source video conferencing app built on [LiveKit Components](https://github.com/livekit/components-js), [LiveKit Cloud](https://livekit.io/cloud), and Next.js. It's been completely redesigned from the ground up using our new components library.
+## Features
+- [x] Easy to deploy, You can use the free service of  [livekit cloud ](https://cloud.livekit.io) directly, without using your own server
+- [x] Support video and voice chat (only voice is allowed by default), no login required
+- [x] Text chat in room, can send text or emoji
+  - [x] More custom emoji support
+  - [ ] More message types, including images, videos 🚩
+- [x] Browser-based speaker, microphone, screen recording(Perfectly support **Chrome**, **Edge**, does **not** support speaker recording on **safari**)
+- [ ] Latency calculate--Current implementation is very simple
+- [x] Room password setting 
+- [ ] Multiple entry points on the front side (polling a set of available apikeys) to improve reliability
+- [ ] Optimized for mobile - works | **good** | excellent 
 
-![LiveKit Meet screenshot](./.github/assets/livekit-meet.jpg)
+(🚩means  indicate  the current ongoing)
 
-## Tech Stack
+## Running locally
 
-- This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-- App is built with [@livekit/components-react](https://github.com/livekit/components-js/) library.
+Clone the repo and install dependencies:
 
-## Demo
+```bash
+git clone git@github.com:velor2012/anonymous-chat-room.git
+cd anonymous-chat-room
+yarn install
+```
 
-Give it a try at https://meet.livekit.io.
+Create a new LiveKit project at <http://cloud.livekit.io>. Then create a new key in your [project settings](https://cloud.livekit.io/projects/p_/settings/keys).
 
-## Dev Setup
+Modify env.example to env.local, and change the configuration according to the actual situation
 
-Steps to get a local dev setup up and running:
+Then run the development server:
 
-1. Run `yarn install` to install all dependencies.
-2. Copy `.env.example` in the project root and rename it to `.env.local`.
-3. Update the missing environment variables in the newly created `.env.local` file.
-4. Run `yarn dev` to start the development server and visit [http://localhost:3000](http://localhost:3000) to see the result.
-5. Start development 🎉
+```bash
+npm run dev
+```
+
+You can test it by opening <http://localhost:3000> in a browser.
+
+## Deploying for production
+
+This is a nextjs app, which you can deploy by following these steps
+1. fork the shoe repository
+2. import directly to vercel
+3. set you environment variables
+
+## Thanks
+
+this repository is built on the top of
+ - [Free4chat](https://github.com/madawei2699/free4chat)
+ - [livekit meet](https://github.com/livekit/meet)
+ - [spatial-audio](https://github.com/livekit-examples/)
+ - [Mornin](https://mornin.fm/) 
+ - [liveKit](https://livekit.io) 
+ - [liveKit-React Sdk](https://github.com/livekit/components-js)
+ - [RecordRTC](https://github.com/muaz-khan/RecordRTC)
+ - [mic-speaker-recorder](https://github.com/asrul10/mic-speaker-recorder)
+
+thanks for their heart of open source.
