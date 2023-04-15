@@ -1,6 +1,8 @@
 # 简介
 这是一个基于[livekit](https://livekit.io/) 和 [Next.js](https://nextjs.org/)的匿名聊天室
 
+> ⚠️ 由于main分支的网页超过一定的人数后会出现电流麦，实在找不到问题，因此本分支在[livekit meet](https://github.com/livekit/meet)的基础上进行了重构
+
 [ENGLISH](./README.md) | 中文
 
 ## Demo

@@ -1,6 +1,8 @@
 # What's it
 An Anonymous Chat Room Power By Livekit [livekit](https://livekit.io/) And [Next.js](https://nextjs.org/)
 
+> ⚠️ Since the main branch will have current mikes after a certain number of people, I really can't find the problem, so this branch is refactored on the basis of [livekit meet](https://github.com/livekit/meet)
+
 ENGLISH | [中文](./README-cn.md)
 
 ## Online demo
