@@ -26,19 +26,19 @@ export function RoomInfo({ roomName, join }: Props) {
     }
     
     const fetchRoomInfo = useCallback(async () => {
-        if(join != undefined && join) {
-            setRoomInfo({num_participants: roominfo_after_enter.participant_num,
-                hasPasswd: roominfo_after_enter.passwd != undefined &&  roominfo_after_enter.passwd != "",
-                maxParticipants: roominfo_after_enter.max_participant_num
-            })
-        }else{
-            debugger
+        debugger
+        // if(join != undefined && join) {
+        //     setRoomInfo({num_participants: roominfo_after_enter.participant_num,
+        //         hasPasswd: roominfo_after_enter.passwd != undefined &&  roominfo_after_enter.passwd != "",
+        //         maxParticipants: roominfo_after_enter.max_participant_num
+        //     })
+        // }else{
+        //     debugger
             const res = await fetch(`/api/info?roomName=${roomName}`);
             const roomInfo = (await res.json()) as RoomInfo;
             setRoomInfo(roomInfo);
             curState$.next({...cs, hassPass: roomInfo.hasPasswd})
-        }
-
+        // }
     }, [roomName]);
 
     const humanRoomName = useMemo(() => {
@@ -46,11 +46,18 @@ export function RoomInfo({ roomName, join }: Props) {
     }, [roomName]);
     
     useEffect(() => {
-        // fetchRoomInfo();
-        const interval = setIntervalAsync(fetchRoomInfo, 5000);
-        return () => {
-            clearIntervalAsync(interval);
-        };
+        if(join != undefined && join) {
+            debugger
+            setRoomInfo({num_participants: roominfo_after_enter.participant_num,
+                hasPasswd: roominfo_after_enter.passwd != undefined &&  roominfo_after_enter.passwd != "",
+                maxParticipants: roominfo_after_enter.max_participant_num
+            })
+        }else{
+            const interval = setIntervalAsync(fetchRoomInfo, 5000);
+            return () => {
+                clearIntervalAsync(interval);
+            };
+        }
     }, [join, roominfo_after_enter, fetchRoomInfo]);
     
     if(!roomName) return null
