@@ -8,7 +8,7 @@ import { useLocalParticipantPermissions } from '@livekit/components-react';
 import { useMediaQuery, useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
 import { MediaDeviceMenu } from '@/components/MyMediaDeviceMenu';
 // import { MediaDeviceMenu } from '@livekit/components-react';
-import { v_preset } from '@/lib/const';
+import { AudioSetting, v_preset } from '@/lib/const';
 import { curState$ } from '@/lib/observe/CurStateObs';
 import { OptionPanel } from './OptionPannel';
 
@@ -91,7 +91,7 @@ const mcurState = useObservableState(curState$, {
           <TrackToggle className=' btn btn-primary' 
           style={{ color:"white"}}
           source={Track.Source.Microphone} showIcon={showIcon}
-          captureOptions={{ autoGainControl: true, channelCount: 2, echoCancellation:true,noiseSuppression:true}}
+          captureOptions={AudioSetting}
           >
             {showText && 'Microphone'}
           </TrackToggle>

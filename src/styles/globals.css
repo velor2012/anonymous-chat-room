@@ -18,6 +18,16 @@ main {
     transition: height 100ms ease-out,y 100ms ease-out;
     rx: .25rem;
 }
+.lk-participant-tile:hover .volume-muter {
+    opacity: 1;
+    transition-delay: 0;
+}
+
+.lk-participant-tile .lk-connection-quality, .lk-participant-tile .volume-muter, .lk-participant-tile .lk-focus-toggle-button {
+    opacity: 0;
+    transition: opacity .2s ease-in-out;
+    transition-delay: .2s;
+}
 
 [data-lk-theme2] {
     font-size: var(--lk-font-size);
@@ -174,9 +184,6 @@ main {
     padding: .25rem;
     background-color: rgba(0,0,0,.5);
     border-radius: calc(var(--lk-border-radius)/2);
-    opacity: 0;
-    transition: opacity .2s ease-in-out;
-    transition-delay: .2s;
 }
 
 .lk-focus-layout-wrapper, .lk-grid-layout-wrapper {
@@ -269,9 +276,6 @@ main {
     padding: .25rem;
     background-color: rgba(0,0,0,.5);
     border-radius: calc(var(--lk-border-radius)/2);
-    opacity: 0;
-    transition: opacity .2s ease-in-out;
-    transition-delay: .2s;
 }
 .lk-room-container *[class^=lk-], .lk-room-container *[class*=" lk-"] {
     box-sizing: border-box;
@@ -326,11 +330,7 @@ main {
     opacity: 1;
     transition-delay: 0;
 }
-.lk-participant-tile .lk-connection-quality {
-    opacity: 0;
-    transition: opacity .2s ease-in-out;
-    transition-delay: .2s;
-}
+
 .lk-button, .lk-start-audio-button, .lk-disconnect-button {
     display: inline-flex;
     align-items: center;

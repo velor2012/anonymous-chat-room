@@ -3,13 +3,15 @@ import type { WidgetState } from '@livekit/components-core';
 import { isEqualTrackRef, isTrackReference, log } from '@livekit/components-core';
 import { Track } from 'livekit-client';;
 import { useTracks, usePinnedTracks, LayoutContextProvider, CarouselView,
-    FocusLayout, FocusLayoutContainer, RoomAudioRenderer,
+    FocusLayout, FocusLayoutContainer,
      ConnectionStateToast, MessageFormatter, useCreateLayoutContext, Chat, useParticipants, useRoomInfo, useRoomContext } from '@livekit/components-react';
 import {GridLayout} from "@/components/MyGridLayout"
 import {ControlBar} from "@/components/MyControlBar"
 import {ChatCard} from "@/components/MyChat"
 import { RoomInfoUseForParticipant, roominfo$ } from '../lib/observe/RoomInfoObs';
 import { curState, curState$ } from '@/lib/observe/CurStateObs';
+import { RoomAudioRenderer } from './MyRoomAudioRenderer';
+
      export interface VideoConferenceProps extends React.HTMLAttributes<HTMLDivElement> {
   chatMessageFormatter?: MessageFormatter;
 }
@@ -74,7 +76,7 @@ export function VideoConference({ chatMessageFormatter, ...props }: VideoConfere
     if(room.metadata != undefined && room.metadata != ""){
         metadataObj = JSON.parse(room.metadata as string)
     }
-    debugger
+    
     const roominfo : RoomInfoUseForParticipant = {
         room_name: room.name,
         participant_num: participants.length,

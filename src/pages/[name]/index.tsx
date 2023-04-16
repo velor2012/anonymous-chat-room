@@ -17,7 +17,7 @@ import { DebugMode } from '../../lib/Debug';
 import {PreJoin, LocalUserChoices} from "@/components/MyPreJoin";
 import { useServerUrl } from '../../lib/client-utils';
 import { log } from "@livekit/components-core"
-import { publishDefaults } from '@/lib/const';
+import { AudioSetting, publishDefaults } from '@/lib/const';
 import { TokenResult } from '@/lib/types';
 import { curState, curState$ } from '@/lib/observe/CurStateObs';
 log.setDefaultLevel(LogLevel.warn)
@@ -133,6 +133,7 @@ useEffect(()=>{
     return {
       audioCaptureDefaults: {
         deviceId: userChoices.audioDeviceId ?? undefined,
+         ...AudioSetting
       },
       adaptiveStream: { pixelDensity: 'screen' },
       dynacast: true,

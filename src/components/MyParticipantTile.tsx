@@ -16,6 +16,7 @@ import { usePagination, ConnectionQualityIndicator, MediaTrack, ParticipantName,
 import { mergeProps } from "@/lib/livekit-react-offical/utils"
 import ParticipantPlaceholder from './MyParticipantPlaceholder';
 import { ScreenShareIcon } from '@/components/assets/icons';
+import { VolumeMuteIndicator } from './VolumeMuteIndicator';
 
 export type ParticipantTileProps = React.HTMLAttributes<HTMLDivElement> & {
   disableSpeakingIndicator?: boolean;
@@ -174,6 +175,12 @@ export const ParticipantTile = ({
                   </>
                 )}
               </div>
+              {/* !p.isLocal && */}
+              {
+                !p.isLocal &&  source != Track.Source.ScreenShare
+                 && source != Track.Source.ScreenShareAudio &&
+                <VolumeMuteIndicator className="lk-participant-metadata-item hover:cursor-pointer opacity-0 volume-muter" />
+              }
               <ConnectionQualityIndicator className="lk-participant-metadata-item" />
             </div>
           </>

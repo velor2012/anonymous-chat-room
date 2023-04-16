@@ -2,20 +2,8 @@ import { useObservableState } from "@/lib/livekit-react-offical/hooks/internal";
 import { roominfo$ } from "@/lib/observe/RoomInfoObs";
 import { RoomMetadata } from "@/lib/types";
 import { useCallback, useEffect, useMemo, useState } from "react";
-type MyConfig = {
-    channelCount: number,
-    echoCancellation: boolean,
-    noiseSuppression: boolean,
-    autoGainControl: boolean,
-}
-// TODO需要在此页面添加设置密码的选项
+
 export function OptionPanel() {
-    const [config, setConfig] = useState<MyConfig | null>({
-        channelCount: 2,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true
-    });
     const roominfo_after_enter = useObservableState(roominfo$, {
         room_name:"",
         participant_num:0,

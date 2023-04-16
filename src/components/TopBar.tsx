@@ -28,6 +28,10 @@ const mcurState = useObservableState(curState$, {
     roomName: ""
 });
 
+const isjoin = useMemo(() => {
+    return mcurState.join
+}, [mcurState.join])
+
   const recordingChange = (r: boolean) => {
     setIsRecording(r);
   };
@@ -58,9 +62,9 @@ const mcurState = useObservableState(curState$, {
         </Link>
       </div>
       <div className=" absolute w-full text-center flex justify-center">
-        {mcurState.join && humanRoomName && (
+        {isjoin && humanRoomName && (
           <div>
-            <span className=' text-3xl font-bold'>房间 {humanRoomName}</span>
+            <span className=' text-xl sm:text-3xl font-bold'>房间 {humanRoomName}</span>
           </div>
         )}
       </div>
@@ -74,7 +78,7 @@ const mcurState = useObservableState(curState$, {
         </label>
 
         {/* 房间信息 */}
-        {mcurState.join && humanRoomName && (
+        {isjoin && humanRoomName && (
             <div className=" animate__animated  animate__fadeIn">
             <label htmlFor="infoModal" className="btn btn-ghost normal-case  text-center text-xl ">
                 <svg  className="icon text-primary-focus" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3570" width="32" height="32"><path fill="currentColor" d="M512 97.52381c228.912762 0 414.47619 185.563429 414.47619 414.47619s-185.563429 414.47619-414.47619 414.47619S97.52381 740.912762 97.52381 512 283.087238 97.52381 512 97.52381z m36.571429 341.333333h-73.142858v292.571428h73.142858V438.857143z m0-121.904762h-73.142858v73.142857h73.142858v-73.142857z" p-id="3571"></path></svg>
@@ -100,7 +104,7 @@ const mcurState = useObservableState(curState$, {
           </div>
         </div>
 
-        {mcurState.join && humanRoomName && (
+        {isjoin && humanRoomName && (
         <div>
             <input type="checkbox" id="infoModal" className="modal-toggle" />
             <label htmlFor='infoModal' className="modal h-screen">
@@ -110,7 +114,7 @@ const mcurState = useObservableState(curState$, {
             >
 
                 <div>
-                    <RoomInfo roomName={humanRoomName} join={mcurState.join}/>
+                    <RoomInfo roomName={humanRoomName} join={isjoin}/>
                     <div className=' divider'></div>
                     <span className=' text-lg'>是否房主：{mcurState.isAdmin ? "yes": "no"}</span>
                     <br/>

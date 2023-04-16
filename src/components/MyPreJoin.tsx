@@ -9,6 +9,7 @@ import ParticipantPlaceholder from './MyParticipantPlaceholder';
 import { RoomInfo } from './RoomInfo';
 import { useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
 import { curState$ } from '@/lib/observe/CurStateObs';
+import { AudioSetting } from '@/lib/const';
 
 export type LocalUserChoices = {
   username: string;
@@ -258,7 +259,7 @@ const needpass = React.useMemo(() => {
             initialState={audioEnabled}
             source={Track.Source.Microphone}
             onChange={(enabled) => setAudioEnabled(enabled)}
-            captureOptions={{ autoGainControl: true, channelCount: 2, echoCancellation:true, noiseSuppression:true}}
+            captureOptions={AudioSetting}
           >
             {micLabel}
           </TrackToggle>

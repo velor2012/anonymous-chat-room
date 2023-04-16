@@ -60,6 +60,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       <TopBar/>
       <Component {...pageProps} />
       {/* <Script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></Script> */}
+      { process.env.NEXT_PUBLIC_UMAMI_URL != undefined && process.env.NEXT_PUBLIC_UMAMI_URL != "" && (
+        <Script
+            src={process.env.NEXT_PUBLIC_UMAMI_URL}
+            strategy='afterInteractive'
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+        />
+      )}
     </>
   );
 }

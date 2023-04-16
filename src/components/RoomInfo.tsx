@@ -26,18 +26,13 @@ export function RoomInfo({ roomName, join }: Props) {
     }
     
     const fetchRoomInfo = useCallback(async () => {
-        debugger
-        // if(join != undefined && join) {
-        //     setRoomInfo({num_participants: roominfo_after_enter.participant_num,
-        //         hasPasswd: roominfo_after_enter.passwd != undefined &&  roominfo_after_enter.passwd != "",
-        //         maxParticipants: roominfo_after_enter.max_participant_num
-        //     })
-        // }else{
-        //     debugger
             const res = await fetch(`/api/info?roomName=${roomName}`);
-            const roomInfo = (await res.json()) as RoomInfo;
-            setRoomInfo(roomInfo);
-            curState$.next({...cs, hassPass: roomInfo.hasPasswd})
+            const _roomInfo = (await res.json()) as RoomInfo;
+            
+            setRoomInfo(_roomInfo);
+            if(_roomInfo.hasPasswd != roomInfo.hasPasswd){
+                curState$.next({...cs, hassPass: _roomInfo.hasPasswd})
+            }
         // }
     }, [roomName]);
 
@@ -46,13 +41,14 @@ export function RoomInfo({ roomName, join }: Props) {
     }, [roomName]);
     
     useEffect(() => {
+        if(!roomName) return
         if(join != undefined && join) {
-            debugger
             setRoomInfo({num_participants: roominfo_after_enter.participant_num,
                 hasPasswd: roominfo_after_enter.passwd != undefined &&  roominfo_after_enter.passwd != "",
                 maxParticipants: roominfo_after_enter.max_participant_num
             })
         }else{
+            fetchRoomInfo()
             const interval = setIntervalAsync(fetchRoomInfo, 5000);
             return () => {
                 clearIntervalAsync(interval);
