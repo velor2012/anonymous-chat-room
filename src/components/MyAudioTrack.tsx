@@ -9,6 +9,7 @@ import { defaultAudioSetting, rnnoiseWasmPath, rnnoiseWasmSimdPath, speexWasmPat
 import { SpeexWorkletNode, RnnoiseWorkletNode } from '@sapphi-red/web-noise-suppressor';
 import { useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
 import { denoiseMethod$} from '@/lib/observe/DenoiseMethodObs';
+import { useMainBrowser } from '@/lib/useMainBrowser';
 
 export type AudioTrackProps<T extends HTMLMediaElement = HTMLMediaElement> =
   React.HTMLAttributes<T> & {
@@ -38,17 +39,13 @@ export function AudioTrack({ onSubscriptionStatusChanged, volume, ...props }: Au
   const { source, name, publication } = props;
   const mediaEl = React.useRef<HTMLAudioElement>(null);
   const participant = useEnsureParticipant(props.participant);
-  const [volumesMap, setVolumeMap] = React.useState(new Map<string, number>())
   const [speex, setSpeex] = React.useState<SpeexWorkletNode>()
   const [rnn, setRNN] = React.useState<RnnoiseWorkletNode>()
-  const [speexWasmBinary, setSpeexWasmBinary] = React.useState<ArrayBuffer>()
-  const [RNNWasmBinary, setRNNWasmBinary] = React.useState<ArrayBuffer>()
-  const [denoiseTools, setDenoiseTools] = React.useState<any>()
 
   const ctx = useWebAudioContext()
   // add cwy 查看当前选择的降噪方法是否为join
 const denoiseMethod = useObservableState(denoiseMethod$, {...defaultAudioSetting.denoiseMethod});
-
+const isMainBrowser  = useMainBrowser()
   const { elementProps, isSubscribed, track } = useMediaTrackBySourceOrName(
     { source, name, participant, publication },
     {
@@ -70,8 +67,10 @@ const denoiseMethod = useObservableState(denoiseMethod$, {...defaultAudioSetting
   }, [volume, track]);
 
   React.useEffect(() => {
+    if(!isMainBrowser) return
+    
     const mdenoiseTools = require('@sapphi-red/web-noise-suppressor')
-    setDenoiseTools(mdenoiseTools)
+
     try{
         if (speex) {
             speex.destroy()
@@ -84,7 +83,6 @@ const denoiseMethod = useObservableState(denoiseMethod$, {...defaultAudioSetting
 
         if (denoiseMethod.speex) {
             mdenoiseTools.loadSpeex({ url: speexWasmPath }).then((speexWasmBinary: any) => {
-                setSpeexWasmBinary(speexWasmBinary)
                 
                 const speexn = new mdenoiseTools.SpeexWorkletNode(ctx, {
                     wasmBinary: speexWasmBinary,
@@ -105,10 +103,9 @@ const denoiseMethod = useObservableState(denoiseMethod$, {...defaultAudioSetting
                 url: rnnoiseWasmPath,
                 simdUrl: rnnoiseWasmSimdPath
               }).then((RNNWasmBinary: any) => {
+        
                 
-                setRNNWasmBinary(RNNWasmBinary)
-                
-                const mrnnoise =  new denoiseTools.RnnoiseWorkletNode(ctx, {
+                const mrnnoise =  new mdenoiseTools.RnnoiseWorkletNode(ctx, {
                     wasmBinary: RNNWasmBinary,
                     maxChannels: 2
                   })

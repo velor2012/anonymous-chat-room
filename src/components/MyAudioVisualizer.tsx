@@ -6,6 +6,8 @@ import { createAudioAnalyser} from '@/lib/client-utils'
 import { useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
 import { denoiseMethod$ } from '@/lib/observe/DenoiseMethodObs';
 import { defaultAudioSetting } from '@/lib/const';
+import { useMainBrowser } from '@/lib/useMainBrowser';
+// import DetectRTC from 'detectrtc';
 export interface AudioVisualizerProps extends React.HTMLAttributes<SVGElement> {
   participant?: Participant;
 }
@@ -23,16 +25,22 @@ export function AudioVisualizer({ participant, ...props }: AudioVisualizerProps)
   const { track } = useMediaTrack(Track.Source.Microphone, participant);
   // add cwy 查看当前选择的降噪方法是否为join
   const denoiseMethod = useObservableState(denoiseMethod$, {...defaultAudioSetting.denoiseMethod});
-
+  const isMainBrowser  = useMainBrowser()
   React.useEffect(() => {
-    debugger
+    
     if (!track || !(track instanceof LocalAudioTrack || track instanceof RemoteAudioTrack)) {
       return;
     }
-    const { analyser, cleanup } = createAudioAnalyser(track, denoiseMethod, {
-      smoothingTimeConstant: 0.8,
-      fftSize: 64,
-    });
+    let m = undefined
+    if(isMainBrowser){
+        m = denoiseMethod
+    }
+
+    const { analyser, cleanup } = createAudioAnalyser(track, m, {
+        smoothingTimeConstant: 0.8,
+        fftSize: 64,
+        });
+    
 
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
 

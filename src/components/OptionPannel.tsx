@@ -5,6 +5,7 @@ import { curState$ } from "@/lib/observe/CurStateObs";
 import { denoiseMethod$ } from "@/lib/observe/DenoiseMethodObs";
 import { roominfo$ } from "@/lib/observe/RoomInfoObs";
 import { DenoiseMethod, RoomMetadata } from "@/lib/types";
+import { useMainBrowser } from "@/lib/useMainBrowser";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export function OptionPanel() {
@@ -22,6 +23,7 @@ export function OptionPanel() {
     const [passwd, setPasswd] = useState("");
     const [capacity, setCapacity] = useState("");
     const [config, setConfig] = useState<DenoiseMethod>( {...defaultAudioSetting.denoiseMethod});
+    const isMainBrowser  = useMainBrowser()
     const isnumber = (nubmer: string) => {
         const re = /^[1-9]\d*$/;//判断字符串是否为数字//判断正整数/[1−9]+[0−9]∗]∗/ 
         if (!re.test(nubmer)) {
@@ -36,7 +38,6 @@ export function OptionPanel() {
         }
         return true
     }
-
     const handleSubmit = (e: any) => {
 
 
@@ -131,10 +132,12 @@ export function OptionPanel() {
                         </div>
                     }
 
-
-                        <div className=" divider"></div>
+                    {
+                        isMainBrowser && 
+                        <div>
+                        <div className=" divider mb-0"/>
                                 <span className=" sm:text-xl font-bold">选择降噪方法</span>
-                                <div    onChange={(v: any) => {
+                                <div className=" my-2 w-full flex justify-around"   onChange={(v: any) => {
                                     if (config == null) return;
                                     const new_config = { ...config };
                                     new_config.speex = false
@@ -147,26 +150,35 @@ export function OptionPanel() {
                                     setConfig(new_config);
                                     // console.log("update!~")
                                 }}>
-   
-                                    <input type="radio" value="none" name="denoiseMethod" id="denoiseMethod1" className="radio radio-info" checked={config ? config.speex == false &&  config.rnn == false : false}
-                                    onChange={(v) => {}}
-                                    ></input>
-                                    <label htmlFor="denoiseMethod1" >None</label>
+                                    <div className=" flex items-center gap-2 text-center">
+                                        <input type="radio" value="none" name="denoiseMethod" id="denoiseMethod1" className="radio radio-success" checked={config ? config.speex == false &&  config.rnn == false : false}
+                                        onChange={(v) => {}}
+                                        ></input>
+                                        <label htmlFor="denoiseMethod1" >None</label>
+                                    </div>
 
-                                    <input type="radio" value="speex" name="denoiseMethod2" id="denoiseMethod2" className="radio radio-info" checked={config ? config.speex : false}
+                                    <div className=" flex items-center gap-2 text-center">
+                                    <input type="radio" value="speex" name="denoiseMethod2" id="denoiseMethod2" className="radio radio-success" checked={config ? config.speex : false}
                                      onChange={(v) => {}}
                                     ></input>
                                     <label htmlFor="denoiseMethod2" >Speex</label>
+                                    </div>
 
-                                    <input type="radio" value="rnn"  name="denoiseMethod3" id="denoiseMethod3" className="radio radio-info" checked={config ? config.rnn : false}
+                                    <div className=" flex items-center gap-2 text-center">
+                                    <input type="radio" value="rnn"  name="denoiseMethod3" id="denoiseMethod3" className="radio radio-success" checked={config ? config.rnn : false}
                                      onChange={(v) => {}}
                                     ></input>
                                     <label htmlFor="denoiseMethod3" >Rnn</label>
+                                    </div>
                                 </div>
+                        </div>
+                    }
                         
-                    <label htmlFor="optionModel" className="btn btn-secondary border-none mt-2" onClick={handleSubmit}>
-                        Done
-                    </label>
+                    <div className=" w-full flex justify-center">
+                        <label htmlFor="optionModel" className="btn btn-md btn-secondary border-none mt-2" onClick={handleSubmit}>
+                            Done
+                        </label>
+                    </div>
                 </div>
             </div>
 
