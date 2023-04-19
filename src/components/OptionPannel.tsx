@@ -1,16 +1,27 @@
+import { compareObjects, deepClone } from "@/lib/client-utils";
+import { defaultAudioSetting } from "@/lib/const";
 import { useObservableState } from "@/lib/livekit-react-offical/hooks/internal";
+import { curState$ } from "@/lib/observe/CurStateObs";
+import { denoiseMethod$ } from "@/lib/observe/DenoiseMethodObs";
 import { roominfo$ } from "@/lib/observe/RoomInfoObs";
-import { RoomMetadata } from "@/lib/types";
+import { DenoiseMethod, RoomMetadata } from "@/lib/types";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export function OptionPanel() {
     const roominfo_after_enter = useObservableState(roominfo$, {
-        room_name:"",
-        participant_num:0,
+        room_name: "",
+        participant_num: 0,
         max_participant_num: -1
+    });
+    const denoiseSetting = useObservableState(denoiseMethod$, {...defaultAudioSetting.denoiseMethod});
+    // add cwy 查看当前状态是否为join
+    const mcurState = useObservableState(curState$, {
+        join: false,
+        isAdmin: false
     });
     const [passwd, setPasswd] = useState("");
     const [capacity, setCapacity] = useState("");
+    const [config, setConfig] = useState<DenoiseMethod>( {...defaultAudioSetting.denoiseMethod});
     const isnumber = (nubmer: string) => {
         const re = /^[1-9]\d*$/;//判断字符串是否为数字//判断正整数/[1−9]+[0−9]∗]∗/ 
         if (!re.test(nubmer)) {
@@ -26,17 +37,13 @@ export function OptionPanel() {
         return true
     }
 
-    const handleSubmit = (e: any)=>{
-        // TODO 设置metadata,同时在prejoin的时候检查密码
-        debugger
-        if(roominfo_after_enter.room_name == undefined && roominfo_after_enter.room_name == "") return
-        updateRoomMeta(roominfo_after_enter.room_name).catch(e=>{
+    const handleSubmit = (e: any) => {
+
+
+        if (roominfo_after_enter.room_name == undefined && roominfo_after_enter.room_name == "") return
+        updateRoomMeta(roominfo_after_enter.room_name).catch(e => {
             console.log(e)
-            // setShowError(true)
-            // setErrorMsg(e)
-            // setTimeout(() => {
-            //     router.push('/');
-            // }, 2000);
+
         })
         if (capacity !== "" && !isnumber(capacity)) {
             alert("please type a number or leave it blank")
@@ -46,13 +53,17 @@ export function OptionPanel() {
             alert("please type a number smaller than 100 or leave it blank")
             e.preventDefault();
         }
+
+        //如果没有修改就不需要更新
+        if(compareObjects(config,denoiseSetting)) return
+        denoiseMethod$.next(deepClone(config))
     }
 
     const updateRoomMeta = useCallback(
         async (roomName: string) => {
             const url = '/api/roomMetadata'
-            if(roomName === undefined) return undefined
-            if(!url) return undefined
+            if (roomName === undefined) return undefined
+            if (!url) return undefined
             const body = {
                 metadata: {
                     passwd: passwd,
@@ -69,7 +80,7 @@ export function OptionPanel() {
             if (response.status === 200) {
                 return await response.json();
             }
-    
+
             const { error } = await response.json();
             throw error;
         },
@@ -83,46 +94,82 @@ export function OptionPanel() {
 
             <input type="checkbox" id="optionModel" className="modal-toggle" />
             <div className="modal ">
-                <div className="modal-box relative bg-primary">
+                <div className="modal-box relative bg-primary form-control">
                     <label htmlFor="optionModel" className="btn btn-accent btn-sm btn-circle absolute right-2 top-2 ">✕</label>
+                    {
+                        mcurState.isAdmin &&
+                        <div className="pl-4 pr-12">
+  
+                                <label className="label cursor-pointer justify-between">
+                                    <span className="label-text text-white sm:text-lg">设置密码</span>
+                                    <input
+                                        className=" w-[10rem] input-sm sm:input-md rounded-lg border-gray-200 bg-white p-3 text-gray-700 shadow-sm transition focus:border-white focus:outline-none focus:ring focus: ring-secondary-focus"
+                                        id="passwd"
+                                        name="passwd"
+                                        type="text"
+                                        placeholder="set room passwd"
+                                        onChange={(inputEl) => setPasswd(inputEl.target.value)}
+                                        autoComplete="off"
+                                    />
+                                </label>
+      
+                                <label className="label cursor-pointer justify-between">
+                                    <span className="label-text text-white sm:text-lg">房间容量</span>
+                                    <input
+                                        className=" w-[10rem] input-sm sm:input-md rounded-lg border-gray-200 bg-white p-3 text-gray-700 shadow-sm transition focus:border-white focus:outline-none focus:ring focus: ring-secondary-focus"
+                                        id="capacity"
+                                        name="capacity"
+                                        type="text"
+                                        placeholder="set room capacity"
+                                        onChange={(inputEl) => {
+                                            setCapacity(inputEl.target.value)
+                                        }}
+                                        autoComplete="off"
+                                    />
+                                </label>
+                        
+                        </div>
+                    }
 
-                    <div className="pl-4 pr-12">
-                        <div className="form-control">
-                            <label className="label cursor-pointer justify-between">
-                                <span className="label-text text-white sm:text-lg">设置密码</span>
-                                <input
-                                    className=" w-[10rem] input-sm sm:input-md rounded-lg border-gray-200 bg-white p-3 text-gray-700 shadow-sm transition focus:border-white focus:outline-none focus:ring focus: ring-secondary-focus"
-                                    id="passwd"
-                                    name="passwd"
-                                    type="text"
-                                    placeholder="set room passwd"
-                                    onChange={(inputEl) => setPasswd(inputEl.target.value)}
-                                    autoComplete="off"
-                                />
-                            </label>
-                        </div>
-                        <div className="form-control">
-                            <label className="label cursor-pointer justify-between">
-                                <span className="label-text text-white sm:text-lg">房间容量</span>
-                                <input
-                                    className=" w-[10rem] input-sm sm:input-md rounded-lg border-gray-200 bg-white p-3 text-gray-700 shadow-sm transition focus:border-white focus:outline-none focus:ring focus: ring-secondary-focus"
-                                    id="capacity"
-                                    name="capacity"
-                                    type="text"
-                                    placeholder="set room capacity"
-                                    onChange={(inputEl) => {
-                                        setCapacity(inputEl.target.value)
-                                    }}
-                                    autoComplete="off"
-                                />
-                            </label>
-                        </div>
-                    </div>
-                    <label  htmlFor="optionModel" className="btn btn-secondary border-none mt-2" onClick={handleSubmit}>
+
+                        <div className=" divider"></div>
+                                <span className=" sm:text-xl font-bold">选择降噪方法</span>
+                                <div    onChange={(v: any) => {
+                                    if (config == null) return;
+                                    const new_config = { ...config };
+                                    new_config.speex = false
+                                    new_config.rnn = false
+                                    if(v.target.value == 'speex'){
+                                        new_config.speex = true
+                                    }else if(v.target.value == 'rnn'){
+                                        new_config.rnn = true
+                                    }
+                                    setConfig(new_config);
+                                    // console.log("update!~")
+                                }}>
+   
+                                    <input type="radio" value="none" name="denoiseMethod" id="denoiseMethod1" className="radio radio-info" checked={config ? config.speex == false &&  config.rnn == false : false}
+                                    onChange={(v) => {}}
+                                    ></input>
+                                    <label htmlFor="denoiseMethod1" >None</label>
+
+                                    <input type="radio" value="speex" name="denoiseMethod2" id="denoiseMethod2" className="radio radio-info" checked={config ? config.speex : false}
+                                     onChange={(v) => {}}
+                                    ></input>
+                                    <label htmlFor="denoiseMethod2" >Speex</label>
+
+                                    <input type="radio" value="rnn"  name="denoiseMethod3" id="denoiseMethod3" className="radio radio-info" checked={config ? config.rnn : false}
+                                     onChange={(v) => {}}
+                                    ></input>
+                                    <label htmlFor="denoiseMethod3" >Rnn</label>
+                                </div>
+                        
+                    <label htmlFor="optionModel" className="btn btn-secondary border-none mt-2" onClick={handleSubmit}>
                         Done
                     </label>
                 </div>
             </div>
+
         </div>
 
     );

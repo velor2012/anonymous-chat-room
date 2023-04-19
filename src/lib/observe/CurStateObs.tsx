@@ -4,7 +4,7 @@ export type curState = {
     join: boolean
     isAdmin: boolean,
     roomName?: string,
-    hassPass?: boolean
+    hassPass?: boolean,
 }
 
 export const curState$ = new Subject<curState>();

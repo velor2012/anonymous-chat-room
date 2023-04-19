@@ -1,8 +1,18 @@
 import { VideoPresets, TrackPublishDefaults, TrackPublishOptions, ScreenSharePresets, AudioPresets, VideoPreset } from 'livekit-client';
 import { LRUCache } from 'lru-cache'
+import { AudioSetting } from './types';
 export const v_preset = new VideoPreset(1280, 720, 3_000_000, 60)
 
-export const AudioSetting = { autoGainControl: true, channelCount: 2, echoCancellation: true, noiseSuppression: true }
+export const defaultAudioSetting: AudioSetting = {
+    autoGainControl: false,
+    channelCount: 2,
+    echoCancellation: true,
+    noiseSuppression: true,
+    denoiseMethod: {
+        speex: false,
+        rnn: false
+    }
+}
 
 export const publishDefaults: TrackPublishDefaults = {
     audioBitrate: AudioPresets.musicStereo.maxBitrate,
@@ -24,3 +34,9 @@ export const theme = {
     color3: "#519D9E",
     color4: "#D1B6E1",
 }
+
+export const speexWorkletPath = "denoise/speex/workletProcessor.js"
+export const speexWasmPath = "denoise/speex/speex.wasm"
+export const rnnWorkletPath = "denoise/rnn/workletProcessor.js"
+export const rnnoiseWasmPath = "denoise/rnn/rnnoise.wasm"
+export const rnnoiseWasmSimdPath = "denoise/rnn/rnnoise_simd.wasm"

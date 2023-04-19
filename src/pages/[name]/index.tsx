@@ -17,9 +17,11 @@ import { DebugMode } from '../../lib/Debug';
 import {PreJoin, LocalUserChoices} from "@/components/MyPreJoin";
 import { useServerUrl } from '../../lib/client-utils';
 import { log } from "@livekit/components-core"
-import { AudioSetting, publishDefaults } from '@/lib/const';
+import { defaultAudioSetting, publishDefaults } from '@/lib/const';
 import { TokenResult } from '@/lib/types';
 import { curState, curState$ } from '@/lib/observe/CurStateObs';
+import { WebAudioContext } from '@/lib/context/webAudioContex';
+import { useSetContext } from '@/lib/context/setContext';
 log.setDefaultLevel(LogLevel.warn)
 const Home: NextPage = () => {
   const router = useRouter();
@@ -82,6 +84,7 @@ const ActiveRoom = ({ roomName, userChoices, onLeave }: ActiveRoomProps) => {
 const [token, setToken] = useState<TokenResult | undefined>(undefined);
 const [showError, setShowError] = useState<boolean>(false);
 const [errorMsg, setErrorMsg] = useState<string>("");
+const {ctx} = useSetContext()
 const fetchToken = useCallback(
     async (roomName: string) => {
         if(roomName === undefined) return undefined
@@ -109,6 +112,18 @@ const fetchToken = useCallback(
     [roomName]
 );
 
+const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+
+useEffect(() => {
+    if(ctx){
+        setAudioContext(ctx);
+    }
+  return () => {
+      setAudioContext((prev) => {
+          return null;
+      });
+  };
+}, [ctx]);
 
 useEffect(()=>{
 
@@ -130,20 +145,23 @@ useEffect(()=>{
   const liveKitUrl = useServerUrl(region as string | undefined);
   
   const roomOptions = useMemo((): RoomOptions => {
-    return {
-      audioCaptureDefaults: {
-        deviceId: userChoices.audioDeviceId ?? undefined,
-         ...AudioSetting
-      },
-      adaptiveStream: { pixelDensity: 'screen' },
-      dynacast: true,
-      publishDefaults: publishDefaults
-    };
-  }, [userChoices, hq]);
+    let setting: RoomOptions =  {
+        audioCaptureDefaults: {
+          deviceId: userChoices.audioDeviceId ?? undefined,
+           ...defaultAudioSetting
+        },
+        adaptiveStream: { pixelDensity: 'screen' },
+        dynacast: true,
+        publishDefaults: publishDefaults
+      };
+      debugger
+      if(audioContext) setting = {...setting, expWebAudioMix: { audioContext } }
+    return setting
+  }, [userChoices, hq, audioContext]);
 
   return (
     <div  className='w-full top-16 relative' style={{ height: "calc(100% - 4rem)"}}>
-      {liveKitUrl && (
+      {liveKitUrl && audioContext && (
         <LiveKitRoom
           token={token?.accessToken}
           serverUrl={liveKitUrl}
@@ -152,8 +170,9 @@ useEffect(()=>{
           audio={userChoices.audioEnabled}
           onDisconnected={onLeave}
         >
-          {/* <AudioConference /> */}
+          <WebAudioContext.Provider value={audioContext}>
           <VideoConference chatMessageFormatter={formatChatMessageLinks} />
+          </WebAudioContext.Provider>
           <DebugMode logLevel={LogLevel.warn} />
         </LiveKitRoom>
       )}

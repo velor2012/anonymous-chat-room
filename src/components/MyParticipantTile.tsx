@@ -11,8 +11,9 @@ import { usePagination, ConnectionQualityIndicator, MediaTrack, ParticipantName,
     useIsMuted,
     useIsSpeaking,
     FocusToggle,
-    AudioVisualizer
+    
 } from '@livekit/components-react';
+import {AudioVisualizer} from "@/components/MyAudioVisualizer"
 import { mergeProps } from "@/lib/livekit-react-offical/utils"
 import ParticipantPlaceholder from './MyParticipantPlaceholder';
 import { ScreenShareIcon } from '@/components/assets/icons';

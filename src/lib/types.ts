@@ -1,5 +1,4 @@
 import { LocalAudioTrack, LocalVideoTrack } from 'livekit-client';
-
 export interface SessionProps {
   roomName: string;
   identity: string;
@@ -20,4 +19,17 @@ export interface RoomMetadata  {
     passwd: string,
     time: number,
     maxParticipants: number
+}
+
+export interface DenoiseMethod {
+    speex: boolean
+    rnn: boolean
+}
+
+export interface AudioSetting  { 
+    autoGainControl: boolean, 
+    channelCount: number, 
+    echoCancellation: boolean,
+     noiseSuppression: boolean,
+     denoiseMethod: DenoiseMethod
 }

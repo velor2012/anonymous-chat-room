@@ -8,8 +8,7 @@ import { useLocalParticipantPermissions } from '@livekit/components-react';
 import { useMediaQuery, useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
 import { MediaDeviceMenu } from '@/components/MyMediaDeviceMenu';
 // import { MediaDeviceMenu } from '@livekit/components-react';
-import { AudioSetting, v_preset } from '@/lib/const';
-import { curState$ } from '@/lib/observe/CurStateObs';
+import { v_preset } from '@/lib/const';
 import { OptionPanel } from './OptionPannel';
 
 type ControlBarControls = {
@@ -43,8 +42,6 @@ export type ControlBarProps = React.HTMLAttributes<HTMLDivElement> & {
 export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
   const defaultVariation = useMediaQuery(`(max-width: 660px)`) ? 'minimal' : 'verbose';
   const localPermissions = useLocalParticipantPermissions();
-  const room = useRoomContext()
-
   variation ??= defaultVariation;
 
   const visibleControls = { leave: true, ...controls };
@@ -77,11 +74,6 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
   const onScreenShareChange = (enabled: boolean) => {
     setIsScreenShareEnabled(enabled);
   };
-  // add cwy 查看当前状态是否为join
-const mcurState = useObservableState(curState$, {
-    join: false,
-    isAdmin: false
-});
 
   return (
     <div className="lk-control-bar" {...props}>
@@ -91,7 +83,6 @@ const mcurState = useObservableState(curState$, {
           <TrackToggle className=' btn btn-primary' 
           style={{ color:"white"}}
           source={Track.Source.Microphone} showIcon={showIcon}
-          captureOptions={AudioSetting}
           >
             {showText && 'Microphone'}
           </TrackToggle>
@@ -119,8 +110,8 @@ const mcurState = useObservableState(curState$, {
       {visibleControls.screenShare && !isMobile && (
         <div className="bg-primary rounded-lg">
         <TrackToggle
-                   className=' btn btn-primary' 
-                   style={{ color:"white"}}
+          className=' btn btn-primary' 
+          style={{ color:"white"}}
           source={Track.Source.ScreenShare}
           captureOptions={{ audio: true, selfBrowserSurface: 'include', resolution:v_preset.resolution}}
           showIcon={showIcon}
@@ -142,9 +133,9 @@ const mcurState = useObservableState(curState$, {
         </ChatToggle>
         </div>
       )}
-    {mcurState.isAdmin && (
+
         <OptionPanel/>
-      )}
+
       {visibleControls.leave && (
         <DisconnectButton  className=' btn bg-red-600 border-none hover:bg-red-700' 
         style={{ color:"white"}}

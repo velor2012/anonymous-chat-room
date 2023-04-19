@@ -13,8 +13,10 @@
     "@emoji-mart/react": "^1.1.1",
     "@livekit/components-react": "0.7.1",
     "@livekit/components-styles": "0.3.0",
+    "@sapphi-red/web-noise-suppressor": "^0.3.3",
     "animate.css": "^4.1.1",
     "audio-recorder-polyfill": "^0.4.1",
+    "audioworklet": "^5.0.5",
     "daisyui": "2.51.5",
     "detectrtc": "^1.4.1",
     "emoji-mart": "^5.5.2",
@@ -30,6 +32,7 @@
     "set-interval-async": "^3.0.3"
   },
   "devDependencies": {
+    "@types/audioworklet": "^0.0.41",
     "@types/node": "18.15.11",
     "@types/react": "18.0.31",
     "@types/react-dom": "18.0.11",
