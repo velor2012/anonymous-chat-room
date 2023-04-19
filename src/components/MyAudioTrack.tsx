@@ -126,7 +126,7 @@ const denoiseMethod = useObservableState(denoiseMethod$, {...defaultAudioSetting
         speex?.disconnect()
         rnn?.disconnect()
     }
-}, [denoiseMethod, track, ctx.audioWorklet])
+}, [denoiseMethod, track, ctx])
 
   return (
     <audio ref={mediaEl} {...elementProps}></audio>

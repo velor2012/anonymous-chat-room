@@ -4,6 +4,7 @@ import { AccessToken, RoomServiceClient } from 'livekit-server-sdk';
 import type { AccessTokenOptions, VideoGrant } from 'livekit-server-sdk';
 import { TokenResult, RoomMetadata } from '../../lib/types';
 import { lru } from '@/lib/lru';
+import { error } from 'console';
 
 const apiKey = process.env.LIVEKIT_API_KEY;
 const apiSecret = process.env.LIVEKIT_API_SECRET;
@@ -56,6 +57,7 @@ export default async function handleToken(req: NextApiRequest, res: NextApiRespo
 
     try{
         const participants = await roomService.listParticipants(roomName);
+        if(participants.length == 0) throw error("room is empty");
         const roomLRUItem: RoomMetadata = lru.get(roomName)
         if(roomLRUItem != undefined && roomLRUItem.maxParticipants > 0 &&
          participants.length >= roomLRUItem.maxParticipants){
