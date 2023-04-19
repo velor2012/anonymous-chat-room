@@ -70,7 +70,7 @@ const isMainBrowser  = useMainBrowser()
     if(!isMainBrowser) return
     
     const mdenoiseTools = require('@sapphi-red/web-noise-suppressor')
-
+debugger
     try{
         if (speex) {
             speex.destroy()
@@ -80,7 +80,6 @@ const isMainBrowser  = useMainBrowser()
             rnn.destroy()
             rnn.disconnect()
         }
-
         if (denoiseMethod.speex) {
             mdenoiseTools.loadSpeex({ url: speexWasmPath }).then((speexWasmBinary: any) => {
                 
@@ -123,7 +122,7 @@ const isMainBrowser  = useMainBrowser()
         speex?.disconnect()
         rnn?.disconnect()
     }
-}, [denoiseMethod, track, ctx])
+}, [denoiseMethod, track, ctx, isMainBrowser])
 
   return (
     <audio ref={mediaEl} {...elementProps}></audio>

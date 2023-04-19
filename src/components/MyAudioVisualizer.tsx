@@ -81,7 +81,7 @@ export function AudioVisualizer({ participant, ...props }: AudioVisualizerProps)
     };
     // add by cwy
     // offical version has a bug, need to add `track?.mediaStream` to the dependency array
-  }, [track, track?.mediaStream, denoiseMethod]);
+  }, [track, track?.mediaStream, denoiseMethod, isMainBrowser]);
 
   return (
     <svg

@@ -10,7 +10,7 @@ export const defaultAudioSetting: AudioSetting = {
     noiseSuppression: true,
     denoiseMethod: {
         speex: false,
-        rnn: false
+        rnn: true
     }
 }
 
