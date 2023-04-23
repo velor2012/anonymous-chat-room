@@ -182,8 +182,5 @@ const LocalRecorderComponent = React.memo(({recordingChange}: LocalRecorderCompo
     );
 })
 
-
-
-
-
+LocalRecorderComponent.displayName = 'LocalRecorder';
 export default LocalRecorderComponent;
