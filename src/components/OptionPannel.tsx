@@ -5,7 +5,7 @@ import { curState$ } from "@/lib/observe/CurStateObs";
 import { denoiseMethod$ } from "@/lib/observe/DenoiseMethodObs";
 import { roominfo$ } from "@/lib/observe/RoomInfoObs";
 import { DenoiseMethod, RoomMetadata } from "@/lib/types";
-import { useMainBrowser } from "@/lib/useMainBrowser";
+import { useMainBrowser } from "@/lib/hooks/useMainBrowser";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export function OptionPanel() {

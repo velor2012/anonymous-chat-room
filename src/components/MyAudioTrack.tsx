@@ -9,7 +9,7 @@ import { defaultAudioSetting, rnnoiseWasmPath, rnnoiseWasmSimdPath, speexWasmPat
 import { SpeexWorkletNode, RnnoiseWorkletNode } from '@sapphi-red/web-noise-suppressor';
 import { useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
 import { denoiseMethod$} from '@/lib/observe/DenoiseMethodObs';
-import { useMainBrowser } from '@/lib/useMainBrowser';
+import { useMainBrowser } from "@/lib/hooks/useMainBrowser";
 
 export type AudioTrackProps<T extends HTMLMediaElement = HTMLMediaElement> =
   React.HTMLAttributes<T> & {

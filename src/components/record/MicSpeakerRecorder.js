@@ -16,7 +16,7 @@ export default class MicSpeakerRecorder {
      * @param {object} config
      */
     constructor(
-        config = { mic: true, speaker: true, screen: false },
+        config = { mic: true, speaker: true, screen: false, screenW: undefined, screenH: undefined },
         successCallback = () => { },
         stopCallback = () => { },
         errorCallback = () => { }
@@ -60,6 +60,17 @@ export default class MicSpeakerRecorder {
         if (typeof config.screen === "undefined") {
             this.screen = false;
         }
+
+        /**
+     * @private
+     * @type {number}
+     */
+        this.screenW = config.screenW || window.screen.width
+        /**
+     * @private
+     * @type {number}
+     */
+        this.screenH = config.screenH || window.screen.height
         /**
          * Callback success
          * @private
@@ -114,7 +125,7 @@ export default class MicSpeakerRecorder {
      */
     captureSpeaker(mediaDevices) {
         if (DetectRTC.browser.isChrome || DetectRTC.browser.isOpera
-            || DetectRTC.browser.isFirefox || DetectRTC.browser.isEdge) return mediaDevices.getDisplayMedia({ audio: this.speaker, video: { height: window.screen.height, width: window.screen.width } });
+            || DetectRTC.browser.isFirefox || DetectRTC.browser.isEdge) return mediaDevices.getDisplayMedia({ audio: this.speaker, video: { height: this.screenH, width:  this.screenW } });
         return captureScreen({video: true });
     }
 
@@ -125,7 +136,7 @@ export default class MicSpeakerRecorder {
     stopListener() {
         let isExecuted = false;
         const executedOnce = () => {
-            debugger
+            
             if (isExecuted === false) {
                 // this.recorder.stopRecording((url) => {
                 //   this.callbackStreamStop(url);
@@ -137,7 +148,7 @@ export default class MicSpeakerRecorder {
             isExecuted = true;
         };
         if (this.mediaStream) {
-            debugger
+            
             this.mediaStream.addEventListener("ended", executedOnce, false);
             this.mediaStream.addEventListener("inactive", executedOnce, false);
             this.mediaStream.getTracks().forEach((track) => {
@@ -146,7 +157,7 @@ export default class MicSpeakerRecorder {
             });
         }
         if (this.mediaStreamMic) {
-            debugger
+            
             this.mediaStreamMic.addEventListener("ended", executedOnce, false);
             this.mediaStreamMic.addEventListener("inactive", executedOnce, false);
             this.mediaStreamMic.getTracks().forEach((track) => {
@@ -155,7 +166,7 @@ export default class MicSpeakerRecorder {
             });
         }
         if (this.mixedStream) {
-            debugger
+            
             this.mixedStream.addEventListener("ended", executedOnce, false);
             this.mixedStream.addEventListener("inactive", executedOnce, false);
             this.mixedStream.getTracks().forEach((track) => {
@@ -170,7 +181,7 @@ export default class MicSpeakerRecorder {
         if (stream) {
             const video = document.querySelector(".video-feedback");
             //   if(!video) return
-            debugger
+            
             video.srcObject = stream;
             video.play();
         } else {
@@ -196,14 +207,14 @@ export default class MicSpeakerRecorder {
             const tracks = []
             if (this.screen || this.speaker) streamSpeaker = await this.captureSpeaker(mediaDevices)
             if (this.mic) streamMic = await this.captureMicrophone(mediaDevices)
-            debugger
+            
             if (this.screen) {
                 tracks.push(...streamSpeaker.getVideoTracks())
                 if(!DetectRTC.isMobileDevice) this.setupVideoFeedback(streamSpeaker);
             }
 
             let mixedStream = null
-            debugger
+            
             if (DetectRTC.browser.isSafari) {
                 if (this.mic && this.screen) {
                     streamSpeaker.addTrack(streamMic.getTracks()[0]);
@@ -235,22 +246,21 @@ export default class MicSpeakerRecorder {
                 disableLogs: false,
                 recorderType: RecordRTC.StereoAudioRecorder
             };
-
             if (this.screen) config = {
                 type: 'video',
                 mimeType: 'video/webm',
                 getNativeBlob: false,
                 disableLogs: false,
-                ignoreMutedMedia: false
+                ignoreMutedMedia: false,
                 // used by CanvasRecorder and WhammyRecorder
-                //   canvas: {
-                //       width: window.screen.width,
-                //       height: window.screen.height
-                //   },
-                //   video:{
-                //       width: window.screen.width,
-                //       height: window.screen.height
-                //   }
+                  canvas: {
+                      width:  this.screenW,
+                      height: this.screenH 
+                  },
+                  video:{
+                      width: this.screenW,
+                      height: this.screenH 
+                  }
             }
 
             if (DetectRTC.browser.name === 'Edge') {
@@ -281,7 +291,6 @@ export default class MicSpeakerRecorder {
         this.recorder && this.recorder.stopRecording((url) => {
             if(!this.recorder) return;
             const t = this.recorder.getBlob()
-            debugger
             this.callbackStreamStop(t);
             this.recorder.destroy();
             this.recorder = null;
@@ -332,4 +341,62 @@ function captureScreen(config) {
         config.onMediaCapturingFailed(error);
         alert(error);
     }
+}
+
+/**
+ * @param {Blob} file - File or Blob object. This parameter is required.
+ * @param {string} fileName - Optional file name e.g. "Recorded-Video.webm"
+ * @example
+ * invokeSaveAsDialog(blob or file, [optional] fileName);
+ * @see {@link https://github.com/muaz-khan/RecordRTC|RecordRTC Source Code}
+ */
+export function invokeSaveAsDialog(file, fileName) {
+    if (!file) {
+        throw 'Blob object is required.';
+    }
+
+    if (!file.type) {
+        try {
+            file.type = 'video/webm';
+        } catch (e) { }
+    }
+
+    var fileExtension = (file.type || 'video/webm').split('/')[1];
+    if (fileExtension.indexOf(';') !== -1) {
+        // extended mimetype, e.g. 'video/webm;codecs=vp8,opus'
+        fileExtension = fileExtension.split(';')[0];
+    }
+    if (fileName && fileName.indexOf('.') !== -1) {
+        var splitted = fileName.split('.');
+        fileName = splitted[0];
+        fileExtension = splitted[1];
+    }
+
+    var fileFullName = (fileName || (Math.round(Math.random() * 9999999999) + 888888888)) + '.' + fileExtension;
+
+    if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
+        return navigator.msSaveOrOpenBlob(file, fileFullName);
+    } else if (typeof navigator.msSaveBlob !== 'undefined') {
+        return navigator.msSaveBlob(file, fileFullName);
+    }
+
+    var hyperlink = document.createElement('a');
+    hyperlink.href = URL.createObjectURL(file);
+    hyperlink.download = fileFullName;
+
+    hyperlink.style = 'display:none;opacity:0;color:transparent;';
+    (document.body || document.documentElement).appendChild(hyperlink);
+
+    if (typeof hyperlink.click === 'function') {
+        hyperlink.click();
+    } else {
+        hyperlink.target = '_blank';
+        hyperlink.dispatchEvent(new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+        }));
+    }
+
+    URL.revokeObjectURL(hyperlink.href);
 }

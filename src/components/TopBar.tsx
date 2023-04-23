@@ -14,7 +14,6 @@ export default function TopBar() {
 //   const router = useRouter();
 //   const roomId = router.query.name as string;
   const [isRecording, setIsRecording] = useState<boolean>(false);
-// TODO需要一个全局变量保存room的信息
 
 const roominfo_after_enter = useObservableState(roominfo$, {
     room_name:"",

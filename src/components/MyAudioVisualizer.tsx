@@ -6,7 +6,7 @@ import { createAudioAnalyser} from '@/lib/client-utils'
 import { useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
 import { denoiseMethod$ } from '@/lib/observe/DenoiseMethodObs';
 import { defaultAudioSetting } from '@/lib/const';
-import { useMainBrowser } from '@/lib/useMainBrowser';
+import { useMainBrowser } from "@/lib/hooks/useMainBrowser";
 // import DetectRTC from 'detectrtc';
 export interface AudioVisualizerProps extends React.HTMLAttributes<SVGElement> {
   participant?: Participant;
