@@ -68,7 +68,7 @@ export function ChatCard({ messageFormatter, ...props }: ChatProps) {
         if (inputRef.current) {
             const inp = inputRef.current
             inp.value += emoji.native;
-            debugger
+            
             setIsOpen(false)
 
             inp.focus();
@@ -109,7 +109,7 @@ export function ChatCard({ messageFormatter, ...props }: ChatProps) {
     // }
     const handleEmojiClick = (e: React.MouseEvent) => {
         setIsOpen(!isOpen)
-        debugger
+        
     }
     const handleAltEnter = async (e: React.KeyboardEvent) => {
         if (inputRef.current) {
@@ -122,7 +122,7 @@ export function ChatCard({ messageFormatter, ...props }: ChatProps) {
                 debugger
             } 
             else if (e.code == "Enter") {
-                debugger
+                
                 e.preventDefault();
                 if (inputRef.current && inputRef.current.value.trim() !== '') {
                     if (send) {

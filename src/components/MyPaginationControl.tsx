@@ -1,5 +1,5 @@
 import * as React from 'react';
-import SvgChevron from '@/components/MySvgChevron';
+import SvgChevron from '@/livekit-react-offical/assets/icons/Chevron';
 import { createInteractingObservable } from '@livekit/components-core';
 import { usePagination } from '@livekit/components-react';
 

@@ -1,7 +1,7 @@
 import type { TrackReference, TrackReferenceOrPlaceholder } from '@livekit/components-core';
 import { isTrackReference } from '@livekit/components-core';
 import * as React from 'react';
-import { cloneSingleChild } from '@/lib/livekit-react-offical/utils';
+import { cloneSingleChild } from '@/livekit-react-offical/utils';
 import { TrackContext } from '@livekit/components-react';
 import {ParticipantTile } from '@/components/MyParticipantTile';
 

@@ -54,17 +54,18 @@ export function createAudioAnalyser(
     let speex: AudioNode | null = null;
     let rnn: AudioNode | null = null;
     // denoiseMethod = undefined
-    debugger
+    
     if(denoiseMethod?.speex){
     
             mdenoiseTools.loadSpeex({ url: speexWasmPath }).then((speexWasmBinary: any) => {
                 
-                audioContext.audioWorklet.addModule(speexWorkletPath).then(() => {
+                audioContext?.audioWorklet.addModule(speexWorkletPath).then(() => {
+                    if(!audioContext || audioContext.state != 'running') return
                     const speexn: AudioNode = new mdenoiseTools.SpeexWorkletNode(audioContext, {
                         wasmBinary: speexWasmBinary,
                         maxChannels: 2
                     })
-                    debugger
+                    
                     speex = speexn;
                     mediaStreamSource.connect(speex as AudioNode)
                     speex.connect(analyser);
@@ -78,7 +79,9 @@ export function createAudioAnalyser(
             simdUrl: rnnoiseWasmSimdPath
           }).then((RNNWasmBinary: any) => {
             
-                audioContext.audioWorklet.addModule(rnnWorkletPath).then(() => {
+                audioContext?.audioWorklet.addModule(rnnWorkletPath).then(() => {
+                if(!audioContext || audioContext.state != 'running') return
+                debugger
                 const mrnnoise: AudioNode =  new mdenoiseTools.RnnoiseWorkletNode(audioContext, {
                     wasmBinary: RNNWasmBinary,
                     maxChannels: 2

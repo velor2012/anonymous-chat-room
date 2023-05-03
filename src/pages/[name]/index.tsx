@@ -32,7 +32,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>LiveKit Meet</title>
+        <title>Anonymous Chat Room</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -154,7 +154,7 @@ useEffect(()=>{
         dynacast: true,
         publishDefaults: publishDefaults
       };
-      debugger
+      
       if(audioContext) setting = {...setting, expWebAudioMix: { audioContext } }
     return setting
   }, [userChoices, hq, audioContext]);

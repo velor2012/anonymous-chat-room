@@ -3,7 +3,7 @@ import { LocalAudioTrack, RemoteAudioTrack, Track } from 'livekit-client';
 import * as React from 'react';
 import { useMediaTrack } from '@livekit/components-react'
 import { createAudioAnalyser} from '@/lib/client-utils'
-import { useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
+import { useObservableState } from '@/livekit-react-offical/hooks/internal';
 import { denoiseMethod$ } from '@/lib/observe/DenoiseMethodObs';
 import { defaultAudioSetting } from '@/lib/const';
 import { useMainBrowser } from "@/lib/hooks/useMainBrowser";

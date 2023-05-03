@@ -13,10 +13,10 @@ import { usePagination, ConnectionQualityIndicator, MediaTrack, ParticipantName,
     FocusToggle,
     
 } from '@livekit/components-react';
+import {ParticipantPlaceholder} from '@/livekit-react-offical/assets/images'
 import {AudioVisualizer} from "@/components/MyAudioVisualizer"
-import { mergeProps } from "@/lib/livekit-react-offical/utils"
-import ParticipantPlaceholder from './MyParticipantPlaceholder';
-import { ScreenShareIcon } from '@/components/assets/icons';
+import { mergeProps } from "@/livekit-react-offical/utils"
+import { ScreenShareIcon } from '@/livekit-react-offical/assets/icons';
 import { VolumeMuteIndicator } from './VolumeMuteIndicator';
 
 export type ParticipantTileProps = React.HTMLAttributes<HTMLDivElement> & {

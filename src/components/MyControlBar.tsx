@@ -1,11 +1,11 @@
 import { ScreenSharePresets, Track, VideoPreset } from 'livekit-client';
 import * as React from 'react';
-import { ChatIcon, LeaveIcon } from '@/components/assets/icons';
+import { ChatIcon, LeaveIcon } from '@/livekit-react-offical/assets/icons';
 import { ChatToggle, StartAudio, TrackToggle, DisconnectButton, useRoomContext } from '@livekit/components-react';
 import { isMobileBrowser } from '@livekit/components-core';
 import { useLocalParticipantPermissions } from '@livekit/components-react';
 // import { useMediaQuery } from '../hooks/internal';
-import { useMediaQuery, useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
+import { useMediaQuery, useObservableState } from '@/livekit-react-offical/hooks/internal';
 import { MediaDeviceMenu } from '@/components/MyMediaDeviceMenu';
 // import { MediaDeviceMenu } from '@livekit/components-react';
 import { v_preset } from '@/lib/const';
@@ -101,7 +101,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
           source={Track.Source.Camera} showIcon={showIcon}>
             {showText && 'Camera'}
           </TrackToggle>
-          <div className="lk-button-group-menu">
+          <div className=" relative flex-shrink-0 btn bg-primary border-none hover:bg-opacity-50 p-0">
             <MediaDeviceMenu kind="videoinput" />
           </div>
         </div>

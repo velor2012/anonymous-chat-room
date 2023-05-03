@@ -1,13 +1,13 @@
 import type { Participant, Track, TrackPublication } from 'livekit-client';
 import * as React from 'react';
-import { useMediaTrackBySourceOrName } from '@/lib/livekit-react-offical/hooks/useMediaTrackBySourceOrName';
+import { useMediaTrackBySourceOrName } from '@/livekit-react-offical/hooks/useMediaTrackBySourceOrName';
 import { log } from '@livekit/components-core';
 import { useEnsureParticipant } from '@livekit/components-react';
 import { RemoteAudioTrack } from 'livekit-client';
 import { useWebAudioContext } from '@/lib/context/webAudioContex';
 import { defaultAudioSetting, rnnoiseWasmPath, rnnoiseWasmSimdPath, speexWasmPath } from '@/lib/const';
 import { SpeexWorkletNode, RnnoiseWorkletNode } from '@sapphi-red/web-noise-suppressor';
-import { useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
+import { useObservableState } from '@/livekit-react-offical/hooks/internal';
 import { denoiseMethod$} from '@/lib/observe/DenoiseMethodObs';
 import { useMainBrowser } from "@/lib/hooks/useMainBrowser";
 
@@ -70,7 +70,7 @@ const isMainBrowser  = useMainBrowser()
     if(!isMainBrowser) return
     
     const mdenoiseTools = require('@sapphi-red/web-noise-suppressor')
-debugger
+
     try{
         if (speex) {
             speex.destroy()
@@ -108,6 +108,8 @@ debugger
                     wasmBinary: RNNWasmBinary,
                     maxChannels: 2
                   })
+                  setRNN(mrnnoise)
+
                   if(mrnnoise && track instanceof RemoteAudioTrack){
                     track.setWebAudioPlugins([
                         mrnnoise

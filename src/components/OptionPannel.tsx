@@ -1,6 +1,6 @@
 import { compareObjects, deepClone } from "@/lib/client-utils";
 import { defaultAudioSetting } from "@/lib/const";
-import { useObservableState } from "@/lib/livekit-react-offical/hooks/internal";
+import { useObservableState } from "@/livekit-react-offical/hooks/internal";
 import { curState$ } from "@/lib/observe/CurStateObs";
 import { denoiseMethod$ } from "@/lib/observe/DenoiseMethodObs";
 import { roominfo$ } from "@/lib/observe/RoomInfoObs";

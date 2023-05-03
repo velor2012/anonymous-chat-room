@@ -5,9 +5,9 @@ import { MediaDeviceMenu } from '@/components/MyMediaDeviceMenu';
 import { useMediaDevices } from '@livekit/components-react';
 import { TrackToggle } from '@livekit/components-react';
 import { log } from '@livekit/components-core';
-import ParticipantPlaceholder from './MyParticipantPlaceholder';
+import {ParticipantPlaceholder} from '@livekit/components-react/src/assets/images'
 import { RoomInfo } from './RoomInfo';
-import { useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
+import { useObservableState } from '@/livekit-react-offical/hooks/internal';
 import { curState$ } from '@/lib/observe/CurStateObs';
 import { defaultAudioSetting } from '@/lib/const';
 

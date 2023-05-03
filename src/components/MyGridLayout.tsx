@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { mergeProps } from '@/lib/livekit-react-offical/utils';
+import { mergeProps } from '@/livekit-react-offical/utils';
 // import { mergeProps } from '@livekit/components-react/dist/utils';
 import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
 import { usePagination, useGridLayout, UseParticipantsOptions } from '@livekit/components-react';
-import { PaginationControl } from './MyPaginationControl';
+import { PaginationControl } from '@/components/MyPaginationControl';
 import { TrackLoop } from './MyTrackLoop';
 export interface GridLayoutProps
   extends React.HTMLAttributes<HTMLDivElement>,

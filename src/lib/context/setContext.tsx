@@ -13,7 +13,7 @@ export function useSetContext() {
         const setUpContext = () => {
             let mctx = null
             if (!ctx || ctx.state === 'closed') {
-                debugger
+                
                 const mmctx = new AudioContext();
                 setCtx(mmctx)
                 mctx = mmctx

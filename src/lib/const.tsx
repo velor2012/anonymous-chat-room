@@ -1,10 +1,12 @@
 import { VideoPresets, TrackPublishDefaults, TrackPublishOptions, ScreenSharePresets, AudioPresets, VideoPreset } from 'livekit-client';
 import { LRUCache } from 'lru-cache'
 import { AudioSetting } from './types';
-export const v_preset = new VideoPreset(1280, 720, 3_000_000, 60)
-
+export const xs_preset = new VideoPreset(1280, 720, 3_000_000, 30)
+export const s_preset = new VideoPreset(1280, 720, 6_000_000, 60)
+export const v_preset = new VideoPreset(1920, 1080, 10_000_000, 60)
+export const simulcast_set = [xs_preset, v_preset]
 export const defaultAudioSetting: AudioSetting = {
-    autoGainControl: false,
+    autoGainControl: true,
     channelCount: 2,
     echoCancellation: true,
     noiseSuppression: true,
@@ -19,10 +21,12 @@ export const publishDefaults: TrackPublishDefaults = {
     dtx: true,
     red: true,
     forceStereo: false,
-    simulcast: true,
+    simulcast: false,
+    // videoSimulcastLayers: simulcast_set,
     // screenShareEncoding: ScreenSharePresets.h1080fps15.encoding,
-    screenShareEncoding: v_preset.encoding,
+    screenShareEncoding: s_preset.encoding,
     stopMicTrackOnMute: false,
+    videoEncoding: s_preset.encoding ,
     videoCodec: 'vp8',
     backupCodec: { codec: 'vp8', encoding: VideoPresets.h540.encoding },
 } as const;

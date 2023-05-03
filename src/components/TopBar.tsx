@@ -4,7 +4,7 @@ import Link from 'next/link';
 import LocalRecorderComponent from './record/LocalRecoder';
 import React from 'react';
 import { RoomInfo } from './RoomInfo';
-import { useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
+import { useObservableState } from '@/livekit-react-offical/hooks/internal';
 import { roominfo$ } from '../lib/observe/RoomInfoObs';
 import { curState$ } from '@/lib/observe/CurStateObs';
 export interface TopBarProps extends React.HTMLAttributes<SVGElement> {

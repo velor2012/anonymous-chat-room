@@ -3,7 +3,7 @@ import { Track } from 'livekit-client';
 import * as React from 'react';
 import { useTracks } from '@livekit/components-react';
 import { volumes$ } from '@/lib/observe/volumeObs';
-import { useObservableState } from '@/lib/livekit-react-offical/hooks/internal';
+import { useObservableState } from '@/livekit-react-offical/hooks/internal';
 import {AudioTrack} from '@/components/MyAudioTrack'
 /**
  * The RoomAudioRenderer component is a drop-in solution for adding audio to your LiveKit app.
