@@ -20,7 +20,7 @@
         "@/public/*": ["./public/*"]
       }
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/assets/images/index.ts.bk"],
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/assets/images/index.ts.bk", "src/components/MyPlayer.js"],
     "exclude": ["node_modules"]
   }
   

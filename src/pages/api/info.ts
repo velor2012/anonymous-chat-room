@@ -44,7 +44,7 @@ export default async function handler(
     // if(l) console.log(`get passwd for ${roomName}, passwd: ${l.passwd}`)
     const participants = await roomService.listParticipants(roomName as string);
     // if(l) console.log(`get num_participants for ${roomName}`)
-    const needpass = (l && l.passwd !== "") ? true: false
+    const needpass = (l && l.passwd !== "" && l.passwd !== undefined) ? true: false
     const maxParticipants = l ? l.maxParticipants: 0
     return res.status(200).json({ num_participants: participants.length, hasPasswd: needpass, maxParticipants: maxParticipants });
   } catch(e) {

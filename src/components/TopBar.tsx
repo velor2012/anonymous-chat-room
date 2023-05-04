@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Router, useRouter } from 'next/router';
 import Link from 'next/link';
-import LocalRecorderComponent from './record/LocalRecoder';
+import LocalRecorderComponent from './Record/LocalRecoder';
 import React from 'react';
 import { RoomInfo } from './RoomInfo';
-import { useObservableState } from '@/livekit-react-offical/hooks/internal';
-import { roominfo$ } from '../lib/observe/RoomInfoObs';
-import { curState$ } from '@/lib/observe/CurStateObs';
+import { useCurState } from '@/lib/hooks/useCurState';
+import { useRoomInfo } from '@/lib/hooks/useRoomInfo';
 export interface TopBarProps extends React.HTMLAttributes<SVGElement> {
   roomName?: string;
 }
@@ -15,17 +13,9 @@ export default function TopBar() {
 //   const roomId = router.query.name as string;
   const [isRecording, setIsRecording] = useState<boolean>(false);
 
-const roominfo_after_enter = useObservableState(roominfo$, {
-    room_name:"",
-    participant_num:0,
-    max_participant_num: -1
-});
-// add cwy 查看当前状态是否为join
-const mcurState = useObservableState(curState$, {
-    join: false,
-    isAdmin: false,
-    roomName: ""
-});
+const roominfo_after_enter = useRoomInfo()
+
+const mcurState = useCurState()
 
 const isjoin = useMemo(() => {
     return mcurState.join

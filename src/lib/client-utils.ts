@@ -81,7 +81,7 @@ export function createAudioAnalyser(
             
                 audioContext?.audioWorklet.addModule(rnnWorkletPath).then(() => {
                 if(!audioContext || audioContext.state != 'running') return
-                debugger
+                
                 const mrnnoise: AudioNode =  new mdenoiseTools.RnnoiseWorkletNode(audioContext, {
                     wasmBinary: RNNWasmBinary,
                     maxChannels: 2
@@ -170,3 +170,11 @@ export  function deepClone(obj:any) {
     return clone;
   }
   
+  export function checkIsFlv(filename: string) {
+    filename = filename.split('?')[0]; // 去掉问号后面的内容
+    return filename.endsWith('.flv');
+  }
+  export function checkIsHLS(filename: string) {
+    filename = filename.split('?')[0]; // 去掉问号后面的内容
+    return filename.endsWith('.m3u8');
+  }

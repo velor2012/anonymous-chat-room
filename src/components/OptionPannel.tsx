@@ -1,25 +1,17 @@
 import { compareObjects, deepClone } from "@/lib/client-utils";
 import { defaultAudioSetting } from "@/lib/const";
 import { useObservableState } from "@/livekit-react-offical/hooks/internal";
-import { curState$ } from "@/lib/observe/CurStateObs";
 import { denoiseMethod$ } from "@/lib/observe/DenoiseMethodObs";
-import { roominfo$ } from "@/lib/observe/RoomInfoObs";
 import { DenoiseMethod, RoomMetadata } from "@/lib/types";
 import { useMainBrowser } from "@/lib/hooks/useMainBrowser";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCurState } from "@/lib/hooks/useCurState";
+import { useRoomInfo } from "@/lib/hooks/useRoomInfo";
 
 export function OptionPanel() {
-    const roominfo_after_enter = useObservableState(roominfo$, {
-        room_name: "",
-        participant_num: 0,
-        max_participant_num: -1
-    });
+    const roominfo_after_enter = useRoomInfo()
     const denoiseSetting = useObservableState(denoiseMethod$, {...defaultAudioSetting.denoiseMethod});
-    // add cwy 查看当前状态是否为join
-    const mcurState = useObservableState(curState$, {
-        join: false,
-        isAdmin: false
-    });
+    const mcurState = useCurState()
     const [passwd, setPasswd] = useState("");
     const [capacity, setCapacity] = useState("");
     const [config, setConfig] = useState<DenoiseMethod>( {...defaultAudioSetting.denoiseMethod});

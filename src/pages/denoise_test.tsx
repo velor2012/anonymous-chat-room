@@ -1,5 +1,5 @@
 import { RnnoiseWorkletNode, SpeexWorkletNode } from '@sapphi-red/web-noise-suppressor';
-import { setupVisualizer } from '@/components/record/visualizer';
+import { setupVisualizer } from '@/components/Record/visualizer';
 import { useEffect, useRef, useState } from 'react';
 import { rnnWorkletPath, rnnoiseWasmPath, rnnoiseWasmSimdPath, speexWasmPath, speexWorkletPath } from '@/lib/const';
 

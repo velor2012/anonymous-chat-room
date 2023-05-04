@@ -5,11 +5,9 @@ import { MediaDeviceMenu } from '@/components/MyMediaDeviceMenu';
 import { useMediaDevices } from '@livekit/components-react';
 import { TrackToggle } from '@livekit/components-react';
 import { log } from '@livekit/components-core';
-import {ParticipantPlaceholder} from '@livekit/components-react/src/assets/images'
 import { RoomInfo } from './RoomInfo';
-import { useObservableState } from '@/livekit-react-offical/hooks/internal';
-import { curState$ } from '@/lib/observe/CurStateObs';
 import { defaultAudioSetting } from '@/lib/const';
+import { useCurState } from '@/lib/hooks/useCurState';
 
 export type LocalUserChoices = {
   username: string;
@@ -225,12 +223,7 @@ export const PreJoin = ({
     audio.selectedDevice,
   ]);
 
-// add cwy 查看当前状态是否为join
-const mcurState = useObservableState(curState$, {
-    join: false,
-    isAdmin: false,
-    hassPass: false
-});
+const mcurState = useCurState()
 
 const needpass = React.useMemo(() => {
     

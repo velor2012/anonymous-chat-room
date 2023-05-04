@@ -10,7 +10,7 @@ const apiKey = process.env.LIVEKIT_API_KEY;
 const apiSecret = process.env.LIVEKIT_API_SECRET;
 const wsUrl = process.env.LIVEKIT_URL;
 
-const createToken = (userInfo: AccessTokenOptions, grant: VideoGrant) => {
+export const createToken = (userInfo: AccessTokenOptions, grant: VideoGrant) => {
   const at = new AccessToken(apiKey, apiSecret, userInfo);
   at.ttl = '5m';
   at.addGrant(grant);

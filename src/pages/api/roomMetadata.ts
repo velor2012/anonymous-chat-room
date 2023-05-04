@@ -40,5 +40,5 @@ export default async function handleToken(req: NextApiRequest, res: NextApiRespo
         return res.status(500).json({ error: 'setting metadata error'})
     }
 
-    return res.status(200).json("sucess");
+    return res.status(200).json(metadata);
 }

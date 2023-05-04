@@ -18,7 +18,8 @@ export interface TokenResult {
 export interface RoomMetadata  {
     passwd: string,
     time: number,
-    maxParticipants: number
+    maxParticipants: number,
+    videoShareUrl?: string
 }
 
 export interface DenoiseMethod {

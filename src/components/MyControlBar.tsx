@@ -10,6 +10,7 @@ import { MediaDeviceMenu } from '@/components/MyMediaDeviceMenu';
 // import { MediaDeviceMenu } from '@livekit/components-react';
 import { v_preset } from '@/lib/const';
 import { OptionPanel } from './OptionPannel';
+import { ShareVideoPannel } from './VideoShare/VideoSharePannel';
 
 type ControlBarControls = {
   microphone?: boolean;
@@ -17,6 +18,7 @@ type ControlBarControls = {
   chat?: boolean;
   screenShare?: boolean;
   leave?: boolean;
+  shareVideo?: boolean;
 };
 
 export type ControlBarProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -51,11 +53,13 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
     visibleControls.chat = false;
     visibleControls.microphone = false;
     visibleControls.screenShare = false;
+    visibleControls.shareVideo = false;
   } else {
     visibleControls.camera ??= localPermissions.canPublish;
     visibleControls.microphone ??= localPermissions.canPublish;
     visibleControls.screenShare ??= localPermissions.canPublish;
     visibleControls.chat ??= localPermissions.canPublishData && controls?.chat;
+    visibleControls.shareVideo ??= controls?.shareVideo;
   }
 
   const showIcon = React.useMemo(
@@ -121,6 +125,11 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
         </TrackToggle>
         </div>
       )}
+    
+    {
+        visibleControls.shareVideo && !isMobile && <ShareVideoPannel showIcon={showIcon} showText={showText}/>
+      }
+
       {visibleControls.chat && (
                 <div className="bg-primary rounded-lg">
         <ChatToggle
@@ -144,7 +153,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
           {showText && 'Leave'}
         </DisconnectButton>
       )}
-      <StartAudio label="Start Audio" />
+      <StartAudio label="Start Audio"  className='btn btn-primary'/>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { setIntervalAsync, clearIntervalAsync } from "set-interval-async";
 import { roominfo$ } from "../lib/observe/RoomInfoObs";
 import { curState, curState$ } from "@/lib/observe/CurStateObs";
+import { useRoomInfo } from "@/lib/hooks/useRoomInfo";
 
 type Props = {
     roomName: string;
@@ -14,11 +15,7 @@ const DEFAULT_ROOM_INFO: RoomInfo = { num_participants: 0, hasPasswd: false, max
 
 export function RoomInfo({ roomName, join }: Props) {
     const [roomInfo, setRoomInfo] = useState<RoomInfo>(DEFAULT_ROOM_INFO);
-    const roominfo_after_enter = useObservableState(roominfo$, {
-        room_name:"",
-        participant_num:0,
-        max_participant_num: 0,
-    });
+    const roominfo_after_enter = useRoomInfo()
     const cs : curState = {
         join: false,
         isAdmin: false,

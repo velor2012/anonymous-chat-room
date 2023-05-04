@@ -2,8 +2,10 @@ import * as React from 'react';
 import type { WidgetState } from '@livekit/components-core';
 import { isEqualTrackRef, isTrackReference, log } from '@livekit/components-core';
 import { Track } from 'livekit-client';;
-import { useTracks, usePinnedTracks, LayoutContextProvider, CarouselView,
-    FocusLayout, FocusLayoutContainer,
+import { useTracks, usePinnedTracks, LayoutContextProvider,
+    //  CarouselView,
+    // FocusLayout,
+     FocusLayoutContainer,
      ConnectionStateToast, MessageFormatter, useCreateLayoutContext, Chat, useParticipants, useRoomInfo, useRoomContext } from '@livekit/components-react';
 import {GridLayout} from "@/components/MyGridLayout"
 import {ControlBar} from "@/components/MyControlBar"
@@ -11,6 +13,11 @@ import {ChatCard} from "@/components/MyChat"
 import { RoomInfoUseForParticipant, roominfo$ } from '../lib/observe/RoomInfoObs';
 import { curState, curState$ } from '@/lib/observe/CurStateObs';
 import { RoomAudioRenderer } from './MyRoomAudioRenderer';
+import { CarouselView } from './MyCarouselView';
+import { useIsShareVideo } from '@/lib/hooks/useIsShareVideo';
+import { VideoShareTile } from './VideoShare/VideoShareTile';
+import { useCurState } from '@/lib/hooks/useCurState';
+import { FocusLayout } from '@/components/MyFocusLayout';
 
      export interface VideoConferenceProps extends React.HTMLAttributes<HTMLDivElement> {
   chatMessageFormatter?: MessageFormatter;
@@ -58,6 +65,8 @@ export function VideoConference({ chatMessageFormatter, ...props }: VideoConfere
 
   const focusTrack = usePinnedTracks(layoutContext)?.[0];
   const carouselTracks = tracks.filter((track) => !isEqualTrackRef(track, focusTrack));
+  const isShareVideo = useIsShareVideo()
+  const mcurState = useCurState()
 
   React.useEffect(() => {
     // if screen share tracks are published, and no pin is set explicitly, auto set the screen share
@@ -72,9 +81,14 @@ export function VideoConference({ chatMessageFormatter, ...props }: VideoConfere
   
   //add cwy 监视当前房间的信息，推送给roominfo$
   React.useEffect(() => {
+    const cus : curState = {
+        join: true,
+        isAdmin: false
+    }
     let metadataObj = undefined
     if(room.metadata != undefined && room.metadata != ""){
         metadataObj = JSON.parse(room.metadata as string)
+        cus.roomMetadata = metadataObj
     }
     
     const roominfo : RoomInfoUseForParticipant = {
@@ -85,23 +99,15 @@ export function VideoConference({ chatMessageFormatter, ...props }: VideoConfere
     }
     roominfo$.next(roominfo)
 
-    const isJoin : curState = {
-        join: true,
-        isAdmin: false
-    }
+
     const lp = participants[0]
+    
     if(lp.metadata != undefined && lp.metadata != ""){
         const met = JSON.parse(lp.metadata as string)
-        isJoin.isAdmin = met.admin
+        cus.isAdmin = met.admin
     }
-    curState$.next(isJoin)
-    // for(let i = 0; i < participants.length; i++){
-    //     if(participants[i].metadata != undefined && participants[i].metadata != ""){
-    //         const met = JSON.parse(participants[i].metadata as string)
-    //         console.log(met.admin)
-    //     }
-    // }
-}, [participants.length, room.name, room.metadata])
+    curState$.next(cus)
+}, [participants.length, room.name, room.metadata, room])
 
   return (
     <div data-lk-theme2="default"  className="lk-video-conference  relative h-full flex items-stretch" {...props}>
@@ -112,23 +118,27 @@ export function VideoConference({ chatMessageFormatter, ...props }: VideoConfere
         onWidgetChange={widgetUpdate}
       >
         <div className="lk-video-conference-inner h-full">
-          {!focusTrack ? (
+          {!focusTrack && !isShareVideo ? (
             <div className="lk-grid-layout-wrapper h-full">
               <GridLayout tracks={tracks} />
-              {/* <GridLayout tracks={tracks} >
-                <ParticipantAudioTile />
-              </GridLayout> */}
             </div>
           ) : (
             <div className="lk-focus-layout-wrapper">
               <FocusLayoutContainer>
                 <CarouselView tracks={carouselTracks} />
                 {focusTrack && <FocusLayout track={focusTrack} />}
+                {!focusTrack && isShareVideo && mcurState.roomMetadata?.videoShareUrl != undefined && mcurState.roomMetadata?.videoShareUrl != "" &&
+                    <VideoShareTile
+                        muted={false}
+                        sharedUrl={mcurState.roomMetadata?.videoShareUrl}
+                        className={`contents lk-participant-tile ${isShareVideo? '': 'hidden'}`}
+                    ></VideoShareTile>
+                }
               </FocusLayoutContainer>
             </div>
           )}
-          <ControlBar controls={{ microphone: true, screenShare: process.env.NEXT_PUBLIC_USE_SCREEN === "true", 
-          camera: process.env.NEXT_PUBLIC_USE_VIDEO === "true", chat: true  }} />
+          <ControlBar controls={{ microphone: true, screenShare: !isShareVideo && process.env.NEXT_PUBLIC_USE_SCREEN === "true", 
+          camera: process.env.NEXT_PUBLIC_USE_VIDEO === "true", chat: true, shareVideo: process.env.NEXT_PUBLIC_USE_ShareVideo === "true" && focusTrack && !isShareVideo ? false: true  }} />
         </div>
         <ChatCard
 

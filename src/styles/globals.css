@@ -386,3 +386,31 @@ main {
 .lk-connection-quality[data-lk-quality=poor]{
     color:var(--lk-connection-poor);
 }
+
+.rotate180{
+    /* 变换原点调整为底部中心点 */
+    transform-origin: center center;
+    /* 旋转角度 */
+    transform: rotate(180deg);
+    /* 动画名称 */
+    animation-name: rotateAnimation;
+    /* 动画执行时间 */
+    animation-duration: 1s;
+    /* 动画执行方式 */
+    animation-timing-function: ease;
+    /* 动画完成后状态 */
+    animation-fill-mode: forwards;
+  }
+  
+  /* 定义旋转动画 */
+  /* @keyframes关键字表示定义动画的一系列关键帧 */
+  @keyframes rotateAnimation{
+    /* 0% 表示进入动画前的状态 */
+    0%{
+      transform: rotate(0deg);
+    }
+    /* 100% 表示完成动画后的状态 */
+    100%{
+      transform: rotate(180deg);
+    }
+  }

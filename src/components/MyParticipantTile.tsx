@@ -11,6 +11,7 @@ import { usePagination, ConnectionQualityIndicator, MediaTrack, ParticipantName,
     useIsMuted,
     useIsSpeaking,
     FocusToggle,
+    usePinnedTracks,
     
 } from '@livekit/components-react';
 import {ParticipantPlaceholder} from '@/livekit-react-offical/assets/images'
@@ -18,6 +19,7 @@ import {AudioVisualizer} from "@/components/MyAudioVisualizer"
 import { mergeProps } from "@/livekit-react-offical/utils"
 import { ScreenShareIcon } from '@/livekit-react-offical/assets/icons';
 import { VolumeMuteIndicator } from './VolumeMuteIndicator';
+import FullIcon from './Icons/FullIcon';
 
 export type ParticipantTileProps = React.HTMLAttributes<HTMLDivElement> & {
   disableSpeakingIndicator?: boolean;
@@ -112,7 +114,7 @@ export const ParticipantTile = ({
   ...htmlProps
 }: ParticipantTileProps) => {
   const p = useEnsureParticipant(participant);
-
+  const curEl = React.useRef<HTMLDivElement>(null)
   const { elementProps } = useParticipantTile({
     participant: p,
     htmlProps,
@@ -123,7 +125,7 @@ export const ParticipantTile = ({
   });
 
   const layoutContext = useMaybeLayoutContext();
-  
+  const focusTrack = usePinnedTracks(layoutContext)?.[0];
   const handleSubscribe = React.useCallback(
     (subscribed: boolean) => {
       if (
@@ -139,6 +141,29 @@ export const ParticipantTile = ({
     [p, layoutContext, source],
   );
 
+  const [isAdmin, setIsAdmin] = React.useState(false)
+  React.useEffect(()=>{
+    if(source !== Track.Source.Camera){
+        debugger
+    }
+        if(p && p.metadata != undefined && p.metadata != ""){
+            const met = JSON.parse(p.metadata as string)
+            setIsAdmin(met.admin)
+        }
+  },[])
+
+  const fullscreen = React.useCallback(() => {
+    // console.log("get!~")
+    if (isParticipantSourcePinned(p, source, layoutContext?.pin.state)){
+        console.log("get!~")
+        const t = curEl.current?.getElementsByTagName('video')
+        if(!t) return
+        for (let el of t) {
+            el.requestFullscreen()
+        }
+    }
+    }, [layoutContext, p, source]);
+  
   return (
     <div style={{ position: 'relative' }} {...elementProps}>
       <ParticipantContextIfNeeded participant={p}>
@@ -147,7 +172,7 @@ export const ParticipantTile = ({
             {/** TODO remove MediaTrack in favor of the equivalent Audio/Video Track. need to figure out how to differentiate here */}
             {
                 process.env.NEXT_PUBLIC_USE_VIDEO === "true" || source === Track.Source.ScreenShare ||  source === Track.Source.ScreenShareAudio? 
-                (<div style={{display: 'contents'}}>
+                (<div style={{display: 'contents'}} ref={curEl}>
                     <MediaTrack
                     source={source}
                     publication={publication}
@@ -186,7 +211,15 @@ export const ParticipantTile = ({
             </div>
           </>
         )}
+        {
+          isAdmin && source != Track.Source.ScreenShare
+          && source != Track.Source.ScreenShareAudio &&
+          <div className=' absolute top-1 left-1 bg-black bg-opacity-50 rounded-sm px-1' >Admin</div>
+        }
         <FocusToggle trackSource={source} />
+        {
+           focusTrack &&  source !== Track.Source.Camera && <FullIcon onClick={fullscreen} className='volume-muter opacity-0 absolute top-1 left-1 cursor-pointer bg-black bg-opacity-50 rounded-sm ' />
+        }
       </ParticipantContextIfNeeded>
     </div>
   );
