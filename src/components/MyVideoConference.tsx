@@ -138,7 +138,7 @@ export function VideoConference({ chatMessageFormatter, ...props }: VideoConfere
             </div>
           )}
           <ControlBar controls={{ microphone: true, screenShare: !isShareVideo && process.env.NEXT_PUBLIC_USE_SCREEN === "true", 
-          camera: process.env.NEXT_PUBLIC_USE_VIDEO === "true", chat: true, shareVideo: !process.env.NEXT_PUBLIC_USE_SHAREVIDEO ||  (process.env.NEXT_PUBLIC_USE_SHAREVIDEO === "true" && focusTrack && !isShareVideo) ? false: true  }} />
+          camera: process.env.NEXT_PUBLIC_USE_VIDEO === "true", chat: true, shareVideo: process.env.NEXT_PUBLIC_USE_SHAREVIDEO === "true" && !(focusTrack && !isShareVideo) }} />
         </div>
         <ChatCard
 

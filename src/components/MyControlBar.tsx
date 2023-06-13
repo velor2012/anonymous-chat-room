@@ -80,7 +80,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
   };
 
   return (
-    <div className="lk-control-bar" {...props}>
+    <div className=" z-10 lk-control-bar" {...props}>
       {visibleControls.microphone && (
         <div className="bg-primary rounded-lg">
         <div className="flex">
@@ -143,7 +143,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
         </div>
       )}
 
-        <OptionPanel/>
+        <OptionPanel showIcon={showIcon} showText={showText}/>
 
       {visibleControls.leave && (
         <DisconnectButton  className=' btn bg-red-600 border-none hover:bg-red-700' 

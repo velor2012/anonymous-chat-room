@@ -1,22 +1,26 @@
 import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
 import LocalRecorderComponent from './Record/LocalRecoder';
 import React from 'react';
 import { RoomInfo } from './RoomInfo';
 import { useCurState } from '@/lib/hooks/useCurState';
 import { useRoomInfo } from '@/lib/hooks/useRoomInfo';
+import { isMobileBrowser } from '@livekit/components-core';
+import { useRouter } from 'next/router';
 export interface TopBarProps extends React.HTMLAttributes<SVGElement> {
   roomName?: string;
 }
 export default function TopBar() {
-//   const router = useRouter();
-//   const roomId = router.query.name as string;
   const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
 const roominfo_after_enter = useRoomInfo()
 
+const router = useRouter();
 const mcurState = useCurState()
 
+useEffect(() => {
+    setIsMobile(isMobileBrowser())
+}, [mcurState.join]);
 const isjoin = useMemo(() => {
     return mcurState.join
 }, [mcurState.join])
@@ -30,8 +34,26 @@ const isjoin = useMemo(() => {
   return (
     <div className="navbar flex fixed h-16 bg-base-100 bg-transparent z-10 backdrop-blur-lg">
       <div className="flex-1 z-10">
-        <Link href="/">
-          <span className="btn btn-ghost normal-case text-xl">
+          <span className="btn btn-ghost normal-case text-xl"
+          onClick={()=>{
+            // console.log("go home")
+            const el = document.getElementsByClassName("lk-disconnect-button")[0]
+            if(!el) {
+                router.push('/');
+                return
+            }
+            // console.log("click")
+            // 创建一个新的鼠标点击事件
+            const clickEvent = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+            });
+            
+            // 分派（dispatch）点击事件到元素
+            el.dispatchEvent(clickEvent);
+        }}
+          >
             <svg
               className="icon text-primary-focus"
               viewBox="0 0 1024 1024"
@@ -48,7 +70,6 @@ const isjoin = useMemo(() => {
               ></path>
             </svg>
           </span>
-        </Link>
       </div>
       <div className=" absolute w-full text-center flex justify-center">
         {isjoin && humanRoomName && (
@@ -58,13 +79,18 @@ const isjoin = useMemo(() => {
         )}
       </div>
       <div className="flex-none z-10">
-        {/* The button to open modal */}
-        <label
-          htmlFor="topBarModal"
-          className="btn btn-ghost normal-case  text-center text-xl"
-        >
-            <svg className="icon  text-primary-focus" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2607" width="32" height="32"><path fill={isRecording? "red" : "currentColor"} d="M943.488 260c-10.176-5.632-22.592-5.312-32.48 0.864L800 330.368 800 288c0-52.928-43.072-96-96-96L160 192C107.072 192 64 235.072 64 288l0 448c0 52.928 43.072 96 96 96l544 0c52.928 0 96-43.072 96-96l0-38.88 111.648 66.368C916.672 766.496 922.336 768 928 768c5.472 0 10.912-1.408 15.808-4.192C953.824 758.112 960 747.488 960 736L960 288C960 276.352 953.696 265.632 943.488 260zM256 448c-35.296 0-64-28.704-64-64s28.704-64 64-64 64 28.704 64 64S291.296 448 256 448z"  p-id="2608"></path></svg>
-        </label>
+        {/* The button to open record modal */}
+        {
+            !isMobile && 
+            (
+                <label
+                htmlFor="topBarModal"
+                className="btn btn-ghost normal-case  text-center text-xl"
+                >
+                    <svg className="icon  text-primary-focus" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2607" width="32" height="32"><path fill={isRecording? "red" : "currentColor"} d="M943.488 260c-10.176-5.632-22.592-5.312-32.48 0.864L800 330.368 800 288c0-52.928-43.072-96-96-96L160 192C107.072 192 64 235.072 64 288l0 448c0 52.928 43.072 96 96 96l544 0c52.928 0 96-43.072 96-96l0-38.88 111.648 66.368C916.672 766.496 922.336 768 928 768c5.472 0 10.912-1.408 15.808-4.192C953.824 758.112 960 747.488 960 736L960 288C960 276.352 953.696 265.632 943.488 260zM256 448c-35.296 0-64-28.704-64-64s28.704-64 64-64 64 28.704 64 64S291.296 448 256 448z"  p-id="2608"></path></svg>
+                </label>
+            )
+        }
 
         {/* 房间信息 */}
         {isjoin && humanRoomName && (

@@ -7,8 +7,10 @@ import { useMainBrowser } from "@/lib/hooks/useMainBrowser";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCurState } from "@/lib/hooks/useCurState";
 import { useRoomInfo } from "@/lib/hooks/useRoomInfo";
+import SettingIcon from "./Icons/SettingIcon";
+import { isMobileBrowser } from '@livekit/components-core';
 
-export function OptionPanel() {
+export function OptionPanel({showIcon,showText, ...props}: any) {
     const roominfo_after_enter = useRoomInfo()
     const denoiseSetting = useObservableState(denoiseMethod$, {...defaultAudioSetting.denoiseMethod});
     const mcurState = useCurState()
@@ -16,6 +18,7 @@ export function OptionPanel() {
     const [capacity, setCapacity] = useState("");
     const [config, setConfig] = useState<DenoiseMethod>( {...defaultAudioSetting.denoiseMethod});
     const isMainBrowser  = useMainBrowser()
+    const isMobile = useMemo(() => isMobileBrowser(), []);
     const isnumber = (nubmer: string) => {
         const re = /^[1-9]\d*$/;//判断字符串是否为数字//判断正整数/[1−9]+[0−9]∗]∗/ 
         if (!re.test(nubmer)) {
@@ -83,7 +86,16 @@ export function OptionPanel() {
 
     return (
         <div className=" flex text-center justify-center items-center ">
-            <label htmlFor="optionModel" className="btn  border-none btn-primary text-white">Setting</label>
+            <label htmlFor="optionModel" className="btn  border-none btn-primary text-white gap-1">
+                {
+                    showIcon && 
+                    <SettingIcon/>
+                }
+                {
+                    showText && 
+                    'SETTING'
+                }
+            </label>
 
             <input type="checkbox" id="optionModel" className="modal-toggle" />
             <div className="modal ">

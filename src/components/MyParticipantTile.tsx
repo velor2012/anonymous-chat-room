@@ -165,7 +165,7 @@ export const ParticipantTile = ({
     }, [layoutContext, p, source]);
   
   return (
-    <div style={{ position: 'relative' }} {...elementProps}>
+    <div style={{ position: 'relative', maxHeight: '100%' }} {...elementProps}>
       <ParticipantContextIfNeeded participant={p}>
         {children ?? (
           <>

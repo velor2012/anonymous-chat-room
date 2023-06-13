@@ -50,7 +50,7 @@ const Home: NextPage = () => {
             }}
           ></ActiveRoom>
         ) : (
-          <div  style={{ display: 'grid', placeItems: 'center', height: '100%' }}>
+          <div  style={{ display: 'grid', placeItems: 'center', height: '100%', width: '100%', overflow: 'hidden' }}>
             <PreJoin
               roomName={roomName as string}
               onError={(err) => console.log('error while setting up prejoin', err)}
