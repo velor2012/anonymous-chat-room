@@ -414,3 +414,31 @@ main {
       transform: rotate(180deg);
     }
   }
+
+
+/* 分页 */
+[data-lk-user-interaction=true].lk-pagination-control {
+    opacity: 1;
+}
+
+.lk-pagination-control {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: stretch;
+    background-color: var(--lk-control-bg);
+    border-radius: var(--lk-border-radius);
+    transition: opacity ease-in-out .15s;
+    opacity: 0;
+}
+
+.lk-pagination-control>.lk-button:first-child>svg {
+    transform: rotate(180deg);
+}
+
+.lk-pagination-count {
+    padding: .5rem .875rem;
+    border-inline: 1px solid var(--lk-bg);
+}
