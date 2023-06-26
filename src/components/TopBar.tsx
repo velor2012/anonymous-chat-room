@@ -93,7 +93,7 @@ const isjoin = useMemo(() => {
           </span>
       </div>
       <div className=" absolute w-full text-center flex justify-center">
-        {isjoin && humanRoomName && (
+        {isjoin && !isMobile && humanRoomName && (
           <div>
             <span className=' text-xl sm:text-3xl font-bold'> { t('room.roomName') + ': ' + humanRoomName}</span>
           </div>

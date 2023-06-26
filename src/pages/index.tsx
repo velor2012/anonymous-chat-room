@@ -22,17 +22,28 @@ class HomeComponent extends React.Component<WithTranslation> {
 // }, 300);
 
   render() {
-    const { t } = this.props;
+    const { t, i18n } = this.props;
     return (
         <div className='Home flex justify-center items-center text-center mx-auto h-full w-full'>
             <div className='flex flex-col text-center justify-center'>
-                <div className='text-xl md:text-5xl mb-2 hidden sm:block'>
-                    A<Typist startDelay={1000}  typingDelay={110} loop={true}  cursor={<span className='cursor'>{this.state.cursor}</span>}   >nonymous Chat Room <Typist.Delay ms={1500} /><Typist.Backspace count={18} /></Typist>
+                {
+                    i18n.language=='en' ?
+                    (
+                        <div>
+                            <div className='text-xl md:text-5xl mb-2 hidden sm:block'>
+                                A<Typist startDelay={1000}  typingDelay={110} loop={true}  cursor={<span className='cursor'>{this.state.cursor}</span>}   >nonymous Chat Room <Typist.Delay ms={1500} /><Typist.Backspace count={18} /></Typist>
 
-                </div>
-                <div className='text-xl md:text-5xl mb-2 block sm:hidden'>
-                    Anonymous Chat Room
-                </div>
+                            </div>
+                            <div className='text-xl md:text-5xl mb-2 block sm:hidden'>
+                                Anonymous Chat Room
+                            </div>
+                        </div>
+                    ) : (
+                        <div className='text-xl md:text-5xl mb-2 block'>
+                            欢迎来到匿名聊天室
+                        </div>
+                    )
+                }
                 <div className="mx-auto mt-8 max-w-xl sm:flex sm:gap-4 h-12">
                 <input
                     placeholder= {t('room.roomName')}
