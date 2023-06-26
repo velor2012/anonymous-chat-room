@@ -11,6 +11,7 @@ import { MediaDeviceMenu } from '@/components/MyMediaDeviceMenu';
 import { v_preset } from '@/lib/const';
 import { OptionPanel } from './OptionPannel';
 import { ShareVideoPannel } from './VideoShare/VideoSharePannel';
+import CameraMicIcon from './Icons/CameraMicIcon';
 
 type ControlBarControls = {
   microphone?: boolean;
@@ -81,7 +82,52 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
 
   return (
     <div className=" z-10 lk-control-bar" {...props}>
-      {visibleControls.microphone && (
+        {/* use in mobile */}
+        {isMobile && (
+            <div className="dropdown dropdown-top">
+            <label tabIndex={0} className="btn btn-primary text-white">
+                <CameraMicIcon/>
+            </label>
+            <ul tabIndex={0} className="dropdown-content z-[1] menu shadow rounded-box">
+                <li>
+                {visibleControls.microphone && (
+                    <div className="bg-primary rounded-lg">
+                    <div className="flex">
+                    <TrackToggle className=' btn btn-primary' 
+                    style={{ color:"white"}}
+                    source={Track.Source.Microphone} showIcon={showIcon}
+                    >
+                        {showText && 'Microphone'}
+                    </TrackToggle>
+                    <div className=" relative flex-shrink-0 btn bg-primary border-none hover:bg-opacity-50 p-0">
+                        <MediaDeviceMenu kind="audioinput" />
+                    </div>
+                    </div>
+                    </div>
+                )}
+                </li>
+                <li>
+                {visibleControls.camera && (
+                    <div className="bg-primary rounded-lg">
+                    <div className="flex">
+                    <TrackToggle
+                    className=' btn btn-primary' 
+                    style={{ color:"white"}}
+                    source={Track.Source.Camera} showIcon={showIcon}>
+                        {showText && 'Camera'}
+                    </TrackToggle>
+                    <div className=" relative flex-shrink-0 btn bg-primary border-none hover:bg-opacity-50 p-0">
+                        <MediaDeviceMenu kind="videoinput" />
+                    </div>
+                    </div>
+                    </div>
+                )}
+                </li>
+            </ul>
+            </div>
+        )}
+        {/* use in pc */}
+      {visibleControls.microphone && !isMobile && (
         <div className="bg-primary rounded-lg">
         <div className="flex">
           <TrackToggle className=' btn btn-primary' 
@@ -96,7 +142,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
         </div>
         </div>
       )}
-      {visibleControls.camera && (
+      {visibleControls.camera && !isMobile && (
         <div className="bg-primary rounded-lg">
         <div className="flex">
           <TrackToggle
