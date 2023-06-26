@@ -1,0 +1,28 @@
+{
+    "room": {
+        "room":"房间",
+        "roomName":"房间名",
+        "membersNum":"人数",
+        "capacity":"容量",
+        "needPasswd":"需要密码",
+        "isAdmin":"是否房主",
+        "passwd": "密码"
+    },
+    "setting":{
+        "setting": "设置",
+        "cdm": "选择降噪方法",
+        "passwd": "设置密码",
+        "capacity": "设置容量"
+    },
+    "mic":"麦克风",
+    "camera": "摄像头",
+    "screenShare": "屏幕共享",
+    "stopShare": "停止共享",
+    "shareVideo": "视频共享",
+    "chat": "聊天",
+    "leave": "离开",
+    "username": "用户名",
+    "Go":"前往",
+    "done":"完成",
+    "home": "首页"
+}

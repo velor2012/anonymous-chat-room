@@ -6,7 +6,7 @@ import {
 useToken,
   formatChatMessageLinks,
 } from '@livekit/components-react';
-import {MyToast} from "@/components/Toast"
+import {MyErrorToast} from "@/components/Toast"
 import {VideoConference} from "@/components/MyVideoConference"
 import { LogLevel, RoomOptions, VideoPresets, TrackPublishDefaults, TrackPublishOptions } from 'livekit-client';
 import type { NextPage } from 'next';
@@ -179,9 +179,9 @@ useEffect(()=>{
 
       {/* toast */}
       {
-        showError && <MyToast>
+        showError && <MyErrorToast>
             {errorMsg}
-        </MyToast>
+        </MyErrorToast>
       }
     </div> 
   );

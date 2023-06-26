@@ -6,10 +6,11 @@ import { useRoomContext } from "@livekit/components-react";
 import { useCurState } from "@/lib/hooks/useCurState";
 import md5  from 'crypto-js/md5';
 import StreamIcon from "../Icons/StreamIcon";
+import { useTranslation } from "react-i18next";
 export function ShareVideoPannel({showIcon,showText, ...props}: any) {
     const roomctx = useRoomContext();
     const isShareVideo = useIsShareVideo()
-
+    const { t, i18n } = useTranslation()
     const mcurState = useCurState()
     const [shareUrl, setShareUrl] = useState("");
     
@@ -93,7 +94,7 @@ export function ShareVideoPannel({showIcon,showText, ...props}: any) {
                     }
                     {
                         showText && 
-                       'Share Video'
+                       t('shareVideo')
                     }
                         </label>
 

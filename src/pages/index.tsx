@@ -3,8 +3,9 @@ import Link from 'next/link'
 import Typist from 'react-typist-component';
 // import { HistoryCard } from '@/components/HistoryCard';
 import { theme } from '@/lib/const';
+import { withTranslation, WithTranslation } from "react-i18next"
 
-class Home extends React.Component {
+class HomeComponent extends React.Component<WithTranslation> {
   state = {
     roomIdText: '',
     cursor: "|"
@@ -21,6 +22,7 @@ class Home extends React.Component {
 // }, 300);
 
   render() {
+    const { t } = this.props;
     return (
         <div className='Home flex justify-center items-center text-center mx-auto h-full w-full'>
             <div className='flex flex-col text-center justify-center'>
@@ -33,7 +35,7 @@ class Home extends React.Component {
                 </div>
                 <div className="mx-auto mt-8 max-w-xl sm:flex sm:gap-4 h-12">
                 <input
-                    placeholder="Room Name"
+                    placeholder= {t('room.roomName')}
                     value={this.state.roomIdText}
                     onChange={this.handleRoomIdTextChange}
                     className="w-48 rounded-lg border-gray-200 bg-white p-3 text-gray-700 shadow-sm transition focus:border-white focus:outline-none focus:ring focus: ring-secondary-focus"
@@ -43,7 +45,7 @@ class Home extends React.Component {
                     <button
                         className=" font-bold btn-primary rounded-lg h-full w-20 border-none text-white"
                     >
-                        👉GO
+                        👉 {t('Go')}
                     </button>
                 </Link>
                 </div>
@@ -67,4 +69,4 @@ class Home extends React.Component {
   }
 }
 
-export default Home;
+export default withTranslation()(HomeComponent);

@@ -6,17 +6,38 @@ import { useCurState } from '@/lib/hooks/useCurState';
 import { useRoomInfo } from '@/lib/hooks/useRoomInfo';
 import { isMobileBrowser } from '@livekit/components-core';
 import { useRouter } from 'next/router';
+import { useTranslation, Trans } from 'react-i18next'
+import LanguageIcon from './Icons/LanguageIcon';
+import { MyInfoToast } from './Toast';
 export interface TopBarProps extends React.HTMLAttributes<SVGElement> {
   roomName?: string;
 }
 export default function TopBar() {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [TostMsg, setTostMsg] = useState<string>("");
+  const [TostTimer, setTostTimer] = useState<any>(null);
 
 const roominfo_after_enter = useRoomInfo()
 
 const router = useRouter();
 const mcurState = useCurState()
+const { t, i18n } = useTranslation()
+
+const switchLanguage = () => {
+    i18n.changeLanguage(i18n.language=='en'?'zh':'en')
+    setTostMsg(i18n.language=='zh'?'切换为中文':'Switch to English')
+    if(TostTimer != null){
+        setShowToast(false)
+        clearTimeout(TostTimer)
+    }
+    setShowToast(true)
+    const mTostTimer = setTimeout(() => {
+        setShowToast(false)
+    }, 1000);
+    setTostTimer(mTostTimer)
+  };
 
 useEffect(() => {
     setIsMobile(isMobileBrowser())
@@ -74,10 +95,19 @@ const isjoin = useMemo(() => {
       <div className=" absolute w-full text-center flex justify-center">
         {isjoin && humanRoomName && (
           <div>
-            <span className=' text-xl sm:text-3xl font-bold'>房间 {humanRoomName}</span>
+            <span className=' text-xl sm:text-3xl font-bold'> { t('room.roomName') + ': ' + humanRoomName}</span>
           </div>
         )}
       </div>
+
+
+        {/* Language Switch */}
+        <div className=" animate__animated  animate__fadeIn">
+        <div className="btn btn-ghost normal-case  text-center text-xl " onClick={switchLanguage}>
+            <LanguageIcon className='icon  text-primary-focus' fill="currentColor"/>
+        </div>
+        </div>
+
       <div className="flex-none z-10">
         {/* The button to open record modal */}
         {
@@ -100,7 +130,7 @@ const isjoin = useMemo(() => {
             </label>
             </div>
         )}
-        
+
         {/* Put this part before </body> tag */}
         <input type="checkbox" id="topBarModal" className="modal-toggle" />
         <div className="modal h-screen">
@@ -131,9 +161,9 @@ const isjoin = useMemo(() => {
                 <div>
                     <RoomInfo roomName={humanRoomName} join={isjoin}/>
                     <div className=' divider'></div>
-                    <span className=' text-lg'>是否房主：{mcurState.isAdmin ? "yes": "no"}</span>
+                    <span className=' text-lg'>{ t('room.isAdmin') + ": " + (mcurState.isAdmin ? "yes": "no")}</span>
                     <br/>
-                    <span className=' text-lg'>房间密码：{roominfo_after_enter.passwd? roominfo_after_enter.passwd: "no passwd"}</span>
+                    <span className=' text-lg'>{  t('room.passwd') + ": " + (roominfo_after_enter.passwd? roominfo_after_enter.passwd: "no passwd")}</span>
                     <br/>
                 </div>
 
@@ -142,6 +172,13 @@ const isjoin = useMemo(() => {
         </div>
         )}
       </div>
+
+        {/* toast */}
+        {
+        showToast && <MyInfoToast>
+            {TostMsg}
+        </MyInfoToast>
+      }
     </div>
   );
 }

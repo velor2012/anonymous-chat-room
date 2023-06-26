@@ -22,6 +22,7 @@
     "daisyui": "2.51.5",
     "detectrtc": "^1.4.1",
     "emoji-mart": "^5.5.2",
+    "i18next": "^23.2.3",
     "livekit-client": "1.7.1",
     "livekit-server-sdk": "1.1.2",
     "lru-cache": "^9.0.1",
@@ -30,6 +31,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-dplayer": "^0.4.2",
+    "react-i18next": "^13.0.1",
     "react-typist-component": "^1.0.5",
     "recordrtc": "^5.6.2",
     "set-interval-async": "^3.0.3"

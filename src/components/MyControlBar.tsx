@@ -12,6 +12,7 @@ import { v_preset } from '@/lib/const';
 import { OptionPanel } from './OptionPannel';
 import { ShareVideoPannel } from './VideoShare/VideoSharePannel';
 import CameraMicIcon from './Icons/CameraMicIcon';
+import { useTranslation } from 'react-i18next';
 
 type ControlBarControls = {
   microphone?: boolean;
@@ -73,7 +74,8 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
   );
 
   const isMobile = React.useMemo(() => isMobileBrowser(), []);
-
+  const { t, i18n } = useTranslation()
+  
   const [isScreenShareEnabled, setIsScreenShareEnabled] = React.useState(false);
 
   const onScreenShareChange = (enabled: boolean) => {
@@ -81,7 +83,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
   };
 
   return (
-    <div className=" z-10 lk-control-bar" {...props}>
+    <div className=" z-1 lk-control-bar" {...props}>
         {/* use in mobile */}
         {isMobile && (
             <div className="dropdown dropdown-top">
@@ -134,7 +136,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
           style={{ color:"white"}}
           source={Track.Source.Microphone} showIcon={showIcon}
           >
-            {showText && 'Microphone'}
+            {showText && t('mic')}
           </TrackToggle>
           <div className=" relative flex-shrink-0 btn bg-primary border-none hover:bg-opacity-50 p-0">
             <MediaDeviceMenu kind="audioinput" />
@@ -149,7 +151,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
            className=' btn btn-primary' 
            style={{ color:"white"}}
           source={Track.Source.Camera} showIcon={showIcon}>
-            {showText && 'Camera'}
+            {showText && t('camera')}
           </TrackToggle>
           <div className=" relative flex-shrink-0 btn bg-primary border-none hover:bg-opacity-50 p-0">
             <MediaDeviceMenu kind="videoinput" />
@@ -167,7 +169,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
           showIcon={showIcon}
           onChange={onScreenShareChange}
         >
-          {showText && (isScreenShareEnabled ? 'Stop screen share' : 'Share screen')}
+          {showText && (isScreenShareEnabled ? t('stopShare') : t('screenShare'))}
         </TrackToggle>
         </div>
       )}
@@ -184,7 +186,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
         >
                               
           {showIcon && <ChatIcon />}
-          {showText && 'Chat'}
+          {showText && t('chat')}
         </ChatToggle>
         </div>
       )}
@@ -196,7 +198,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
         style={{ color:"white"}}
         >
           {showIcon && <LeaveIcon />}
-          {showText && 'Leave'}
+          {showText && t('leave')}
         </DisconnectButton>
       )}
       <StartAudio label="Start Audio"  className='btn btn-primary'/>

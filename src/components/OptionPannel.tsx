@@ -9,6 +9,7 @@ import { useCurState } from "@/lib/hooks/useCurState";
 import { useRoomInfo } from "@/lib/hooks/useRoomInfo";
 import SettingIcon from "./Icons/SettingIcon";
 import { isMobileBrowser } from '@livekit/components-core';
+import { useTranslation } from "react-i18next";
 
 export function OptionPanel({showIcon,showText, ...props}: any) {
     const roominfo_after_enter = useRoomInfo()
@@ -18,7 +19,7 @@ export function OptionPanel({showIcon,showText, ...props}: any) {
     const [capacity, setCapacity] = useState("");
     const [config, setConfig] = useState<DenoiseMethod>( {...defaultAudioSetting.denoiseMethod});
     const isMainBrowser  = useMainBrowser()
-    const isMobile = useMemo(() => isMobileBrowser(), []);
+    const { t, i18n } = useTranslation()
     const isnumber = (nubmer: string) => {
         const re = /^[1-9]\d*$/;//判断字符串是否为数字//判断正整数/[1−9]+[0−9]∗]∗/ 
         if (!re.test(nubmer)) {
@@ -93,7 +94,7 @@ export function OptionPanel({showIcon,showText, ...props}: any) {
                 }
                 {
                     showText && 
-                    'SETTING'
+                    t('setting.setting')
                 }
             </label>
 
@@ -106,26 +107,26 @@ export function OptionPanel({showIcon,showText, ...props}: any) {
                         <div className="pl-4 pr-12">
   
                                 <label className="label cursor-pointer justify-between">
-                                    <span className="label-text text-white sm:text-lg">设置密码</span>
+                                    <span className="label-text text-white sm:text-lg">{t('setting.passwd')}</span>
                                     <input
                                         className=" w-[10rem] input-sm sm:input-md rounded-lg border-gray-200 bg-white p-3 text-gray-700 shadow-sm transition focus:border-white focus:outline-none focus:ring focus: ring-secondary-focus"
                                         id="passwd"
                                         name="passwd"
                                         type="text"
-                                        placeholder="set room passwd"
+                                        placeholder={t('room.passwd')}
                                         onChange={(inputEl) => setPasswd(inputEl.target.value)}
                                         autoComplete="off"
                                     />
                                 </label>
       
                                 <label className="label cursor-pointer justify-between">
-                                    <span className="label-text text-white sm:text-lg">房间容量</span>
+                                    <span className="label-text text-white sm:text-lg">{t('setting.capacity')}</span>
                                     <input
                                         className=" w-[10rem] input-sm sm:input-md rounded-lg border-gray-200 bg-white p-3 text-gray-700 shadow-sm transition focus:border-white focus:outline-none focus:ring focus: ring-secondary-focus"
                                         id="capacity"
                                         name="capacity"
                                         type="text"
-                                        placeholder="set room capacity"
+                                        placeholder={t('room.capacity')}
                                         onChange={(inputEl) => {
                                             setCapacity(inputEl.target.value)
                                         }}
@@ -140,7 +141,7 @@ export function OptionPanel({showIcon,showText, ...props}: any) {
                         isMainBrowser && 
                         <div>
                         <div className=" divider mb-0"/>
-                                <span className=" sm:text-xl font-bold">选择降噪方法</span>
+                                <span className=" sm:text-xl font-bold">{t('setting.cdm')}</span>
                                 <div className=" my-2 w-full flex justify-around"   onChange={(v: any) => {
                                     if (config == null) return;
                                     const new_config = { ...config };
@@ -180,7 +181,7 @@ export function OptionPanel({showIcon,showText, ...props}: any) {
                         
                     <div className=" w-full flex justify-center">
                         <label htmlFor="optionModel" className="btn btn-md btn-secondary border-none mt-2" onClick={handleSubmit}>
-                            Done
+                            {t('done')}
                         </label>
                     </div>
                 </div>

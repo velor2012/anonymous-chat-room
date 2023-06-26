@@ -8,6 +8,7 @@ import '../styles/globals.css';
 import { DefaultSeo } from 'next-seo';
 import TopBar from '@/components/TopBar';
 import Script from 'next/script';
+import '../i18n/config'; // 引用配置文件
 // TODO修改下面的相关信息
 function MyApp({ Component, pageProps }: AppProps) {
     return (

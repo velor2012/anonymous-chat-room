@@ -1,0 +1,28 @@
+{
+    "room": {
+        "room":"Room",
+        "roomName":"Room Name",
+        "membersNum":"Members Number",
+        "capacity":"Capacity",
+        "needPasswd":"Need Passwd",
+        "isAdmin":"IsAdmin",
+        "passwd": "Password"
+    },
+    "setting":{
+        "setting": "Setting",
+        "cdm": "Choice Denoise Method",
+        "passwd": "Setting Password",
+        "capacity": "Setting Capacity"
+    },
+    "mic":"Micphone",
+    "camera": "Camera",
+    "screenShare": "Screen Share",
+    "stopShare": "Stop Share",
+    "shareVideo": "Video Share",
+    "chat": "Chat",
+    "leave": "leave",
+    "username": "Username",
+    "Go":"Go",
+    "done":"Done",
+    "home": "Home"
+}

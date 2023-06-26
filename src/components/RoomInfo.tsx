@@ -5,6 +5,7 @@ import { setIntervalAsync, clearIntervalAsync } from "set-interval-async";
 import { roominfo$ } from "../lib/observe/RoomInfoObs";
 import { curState, curState$ } from "@/lib/observe/CurStateObs";
 import { useRoomInfo } from "@/lib/hooks/useRoomInfo";
+import { useTranslation } from "react-i18next";
 
 type Props = {
     roomName: string;
@@ -16,6 +17,7 @@ const DEFAULT_ROOM_INFO: RoomInfo = { num_participants: 0, hasPasswd: false, max
 export function RoomInfo({ roomName, join }: Props) {
     const [roomInfo, setRoomInfo] = useState<RoomInfo>(DEFAULT_ROOM_INFO);
     const roominfo_after_enter = useRoomInfo()
+    const { t, i18n } = useTranslation()
     const cs : curState = {
         join: false,
         isAdmin: false,
@@ -60,7 +62,7 @@ export function RoomInfo({ roomName, join }: Props) {
 
             <div className="flex flex-col items-center">
                 <span className="text-lg">
-                    房间名
+                {t('room.roomName')}
                 </span>
 
                 <span className=" font-bold text-6xl font-mono">{humanRoomName}</span>
@@ -69,7 +71,7 @@ export function RoomInfo({ roomName, join }: Props) {
 
             <div className="pl-2  flex flex-col items-center">
                 <span className="text-lg">
-                    当前人数
+                {t('room.membersNum')}
                 </span>
 
                 <span className=" text-6xl font-mono countdown">
@@ -81,7 +83,7 @@ export function RoomInfo({ roomName, join }: Props) {
                 roomInfo.maxParticipants > 0 && (
                 <div className="pl-2  flex flex-col items-center">
                     <span className="text-lg">
-                        容量
+                        {t('room.capacity')}
                     </span>
 
                     <span className=" text-6xl font-mono countdown">
@@ -95,7 +97,7 @@ export function RoomInfo({ roomName, join }: Props) {
             roomInfo.hasPasswd && (
                 <div className="pl-2 flex flex-col justify-center items-center">
                     <span className="text-lg text-primary ">
-                        ⚠️ 需要密码
+                        ⚠️ {t('room.needPasswd')}
                     </span>
                 </div>
             )}

@@ -8,6 +8,7 @@ import { log } from '@livekit/components-core';
 import { RoomInfo } from './RoomInfo';
 import { defaultAudioSetting } from '@/lib/const';
 import { useCurState } from '@/lib/hooks/useCurState';
+import { useTranslation } from 'react-i18next';
 
 export type LocalUserChoices = {
   username: string;
@@ -168,10 +169,10 @@ export const PreJoin = ({
   onSubmit,
   onError,
   debug,
-  joinLabel = 'Join Room',
-  micLabel = 'Microphone',
-  camLabel = 'Camera',
-  userLabel = 'Username',
+//   joinLabel = 'Join Room',
+//   micLabel = 'Microphone',
+//   camLabel = 'Camera',
+//   userLabel = 'Username',
   ...htmlProps
 }: PreJoinProps) => {
   const [userChoices, setUserChoices] = React.useState(DEFAULT_USER_CHOICES);
@@ -224,6 +225,7 @@ export const PreJoin = ({
   ]);
 
 const mcurState = useCurState()
+const { t, i18n } = useTranslation()
 
 const needpass = React.useMemo(() => {
     
@@ -255,7 +257,7 @@ const needpass = React.useMemo(() => {
             onChange={(enabled) => setAudioEnabled(enabled)}
             captureOptions={defaultAudioSetting}
           >
-            {micLabel}
+            {t('mic')}
           </TrackToggle>
           <div className=" relative flex-shrink-0 btn bg-primary border-none hover:bg-opacity-50 p-0">
             <MediaDeviceMenu
@@ -277,7 +279,7 @@ const needpass = React.useMemo(() => {
           id="username"
           name="username"
           type="text"
-          placeholder={userLabel}
+          placeholder={t('username')}
           onChange={(inputEl) => setUsername(inputEl.target.value)}
           autoComplete="off"
         />
@@ -298,12 +300,11 @@ const needpass = React.useMemo(() => {
           className=" btn-primary rounded-lg text-white  w-32 border-none font-bold"
           type="submit"
           onClick={(e)=>{
-            // TODO检查是否需要密码
             handleSubmit(e)
           }}
           disabled={!isValid}
         >
-          👉GO
+          👉 {t('Go')}
         </button>
       </form>
 
