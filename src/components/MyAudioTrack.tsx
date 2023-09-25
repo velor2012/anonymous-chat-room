@@ -1,9 +1,11 @@
 import type { Participant, Track, TrackPublication } from 'livekit-client';
 import * as React from 'react';
-import { useMediaTrackBySourceOrName } from '@/livekit-react-offical/hooks/useMediaTrackBySourceOrName';
+import type { TrackReference } from '@livekit/components-core';
 import { log } from '@livekit/components-core';
-import { useEnsureParticipant } from '@livekit/components-react';
+import { useEnsureParticipant, useMaybeTrackRefContext } from '@livekit/components-react';
 import { RemoteAudioTrack } from 'livekit-client';
+
+import { useMediaTrackBySourceOrName } from '@/livekit-react-offical/hooks/useMediaTrackBySourceOrName';
 import { useWebAudioContext } from '@/lib/context/webAudioContex';
 import { defaultAudioSetting, rnnoiseWasmPath, rnnoiseWasmSimdPath, speexWasmPath } from '@/lib/const';
 import { SpeexWorkletNode, RnnoiseWorkletNode } from '@sapphi-red/web-noise-suppressor';
@@ -11,16 +13,23 @@ import { useObservableState } from '@/livekit-react-offical/hooks/internal';
 import { denoiseMethod$} from '@/lib/observe/DenoiseMethodObs';
 import { useMainBrowser } from "@/lib/hooks/useMainBrowser";
 
-export type AudioTrackProps<T extends HTMLMediaElement = HTMLMediaElement> =
-  React.HTMLAttributes<T> & {
-    source: Track.Source;
-    name?: string;
-    participant?: Participant;
-    publication?: TrackPublication;
-    onSubscriptionStatusChanged?: (subscribed: boolean) => void;
-    /** by the default the range is between 0 and 1 */
-    volume?: number;
-  };
+/** @public */
+export interface AudioTrackProps<T extends HTMLMediaElement = HTMLMediaElement>
+  extends React.HTMLAttributes<T> {
+  /** The track reference of the track from which the audio is to be rendered. */
+  trackRef?: TrackReference;
+  /** @deprecated This property will be removed in a future version use `trackRef` instead. */
+  source?: Track.Source;
+  /** @deprecated This property will be removed in a future version use `trackRef` instead. */
+  name?: string;
+  /** @deprecated This property will be removed in a future version use `trackRef` instead. */
+  participant?: Participant;
+  /** @deprecated This property will be removed in a future version use `trackRef` instead. */
+  publication?: TrackPublication;
+  onSubscriptionStatusChanged?: (subscribed: boolean) => void;
+  /** by the default the range is between 0 and 1 */
+  volume?: number;
+}
 
 /**
  * The AudioTrack component is responsible for rendering participant audio tracks.
@@ -29,16 +38,25 @@ export type AudioTrackProps<T extends HTMLMediaElement = HTMLMediaElement> =
  * @example
  * ```tsx
  *   <ParticipantTile>
- *     <AudioTrack source={Track.Source.Microphone} />
+ *     <AudioTrack trackRef={trackRef} />
  *   </ParticipantTile>
  * ```
  *
  * @see `ParticipantTile` component
+ * @public
  */
-export function AudioTrack({ onSubscriptionStatusChanged, volume, ...props }: AudioTrackProps) {
-  const { source, name, publication } = props;
-  const mediaEl = React.useRef<HTMLAudioElement>(null);
-  const participant = useEnsureParticipant(props.participant);
+export function AudioTrack({
+  trackRef,
+  onSubscriptionStatusChanged,
+  volume,
+  source,
+  name,
+  publication,
+  participant: p,
+  ...props
+}: AudioTrackProps) {
+  // TODO: Remove and refactor all variables with underscore in a future version after the deprecation period.
+  const maybeTrackRef = useMaybeTrackRefContext();
   const [speex, setSpeex] = React.useState<SpeexWorkletNode>()
   const [rnn, setRNN] = React.useState<RnnoiseWorkletNode>()
 
@@ -46,8 +64,20 @@ export function AudioTrack({ onSubscriptionStatusChanged, volume, ...props }: Au
   // add cwy 查看当前选择的降噪方法是否为join
 const denoiseMethod = useObservableState(denoiseMethod$, {...defaultAudioSetting.denoiseMethod});
 const isMainBrowser  = useMainBrowser()
+
+  const _name = trackRef?.publication?.trackName ?? maybeTrackRef?.publication?.trackName ?? name;
+  const _source = trackRef?.source ?? maybeTrackRef?.source ?? source;
+  const _publication = trackRef?.publication ?? maybeTrackRef?.publication ?? publication;
+  const _participant = trackRef?.participant ?? maybeTrackRef?.participant ?? p;
+  if (_source === undefined) {
+    throw new Error('The AudioTrack component expects a trackRef or source property.');
+  }
+
+  const mediaEl = React.useRef<HTMLAudioElement>(null);
+  const participant = useEnsureParticipant(_participant);
+
   const { elementProps, isSubscribed, track } = useMediaTrackBySourceOrName(
-    { source, name, participant, publication },
+    { source: _source, name: _name, participant, publication: _publication },
     {
       element: mediaEl,
       props,
@@ -59,7 +89,10 @@ const isMainBrowser  = useMainBrowser()
   }, [isSubscribed, onSubscriptionStatusChanged]);
 
   React.useEffect(() => {
-    if (volume && track instanceof RemoteAudioTrack) {
+    if (track === undefined || volume === undefined) {
+      return;
+    }
+    if (track instanceof RemoteAudioTrack) {
       track.setVolume(volume);
     } else {
       log.warn('volume can only be set on remote audio tracks');
@@ -67,11 +100,12 @@ const isMainBrowser  = useMainBrowser()
   }, [volume, track]);
 
   React.useEffect(() => {
-    if(!isMainBrowser) return
+    if(!isMainBrowser || !track || !(track instanceof RemoteAudioTrack)) return
     
     const mdenoiseTools = require('@sapphi-red/web-noise-suppressor')
 
     try{
+        // 清除之前的降噪模块
         if (speex) {
             speex.destroy()
             speex.disconnect()
@@ -80,6 +114,9 @@ const isMainBrowser  = useMainBrowser()
             rnn.destroy()
             rnn.disconnect()
         }
+        track.setWebAudioPlugins([])
+
+        // 添加降噪模块
         if (denoiseMethod.speex) {
             mdenoiseTools.loadSpeex({ url: speexWasmPath }).then((speexWasmBinary: any) => {
                 

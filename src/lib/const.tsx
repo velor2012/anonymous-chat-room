@@ -1,5 +1,4 @@
 import { VideoPresets, TrackPublishDefaults, TrackPublishOptions, ScreenSharePresets, AudioPresets, VideoPreset } from 'livekit-client';
-import { LRUCache } from 'lru-cache'
 import { AudioSetting } from './types';
 export const xs_preset = new VideoPreset(1280, 720, 3_000_000, 30)
 export const s_preset = new VideoPreset(1280, 720, 6_000_000, 60)
@@ -12,7 +11,7 @@ export const defaultAudioSetting: AudioSetting = {
     noiseSuppression: true,
     denoiseMethod: {
         speex: false,
-        rnn: true
+        rnn: false
     }
 }
 
@@ -39,8 +38,8 @@ export const theme = {
     color4: "#D1B6E1",
 }
 
-export const speexWorkletPath = "denoise/speex/workletProcessor.js"
-export const speexWasmPath = "denoise/speex/speex.wasm"
-export const rnnWorkletPath = "denoise/rnn/workletProcessor.js"
-export const rnnoiseWasmPath = "denoise/rnn/rnnoise.wasm"
-export const rnnoiseWasmSimdPath = "denoise/rnn/rnnoise_simd.wasm"
+export const speexWorkletPath = "/denoise/speex/workletProcessor.js"
+export const speexWasmPath = "/denoise/speex/speex.wasm"
+export const rnnWorkletPath = "/denoise/rnn/workletProcessor.js"
+export const rnnoiseWasmPath = "/denoise/rnn/rnnoise.wasm"
+export const rnnoiseWasmSimdPath = "/denoise/rnn/rnnoise_simd.wasm"

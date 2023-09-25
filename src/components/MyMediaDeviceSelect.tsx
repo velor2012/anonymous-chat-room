@@ -1,54 +1,34 @@
 import * as React from 'react';
-import {  useObservableState } from '@/livekit-react-offical/hooks/internal';
-import { setupDeviceSelector, createMediaDeviceObserver } from '@livekit/components-core';
 import { mergeProps } from '@/livekit-react-offical/utils';
-import { useMaybeRoomContext } from '@livekit/components-react';
-import type { Room } from 'livekit-client';
+import { useMaybeRoomContext, useMediaDeviceSelect } from '@livekit/components-react';
+import type { LocalAudioTrack, LocalVideoTrack } from 'livekit-client';
 
-export function useMediaDevices({ kind }: { kind: MediaDeviceKind }) {
-  const deviceObserver = React.useMemo(() => createMediaDeviceObserver(kind), [kind]);
-  const devices = useObservableState(deviceObserver, []);
-  return devices;
-}
-
-export interface UseMediaDeviceSelectProps {
-  kind: MediaDeviceKind;
-  room?: Room;
-}
-
-export function useMediaDeviceSelect({ kind, room }: UseMediaDeviceSelectProps) {
-  const roomContext = useMaybeRoomContext();
-  // List of all devices.
-  const deviceObserver = React.useMemo(() => createMediaDeviceObserver(kind), [kind]);
-  const devices = useObservableState(deviceObserver, []);
-  // Active device management.
-  const [currentDeviceId, setCurrentDeviceId] = React.useState<string>('');
-  const { className, activeDeviceObservable, setActiveMediaDevice } = React.useMemo(
-    () => setupDeviceSelector(kind, room ?? roomContext),
-    [kind, room, roomContext],
-  );
-
-  React.useEffect(() => {
-    const listener = activeDeviceObservable.subscribe((deviceId) => {
-      if (deviceId) setCurrentDeviceId(deviceId);
-    });
-    return () => {
-      listener?.unsubscribe();
-    };
-  }, [activeDeviceObservable]);
-
-  return { devices, className, activeDeviceId: currentDeviceId, setActiveMediaDevice };
-}
-
+/** @public */
 export interface MediaDeviceSelectProps extends React.HTMLAttributes<HTMLUListElement> {
   kind: MediaDeviceKind;
   onActiveDeviceChange?: (deviceId: string) => void;
   onDeviceListChange?: (devices: MediaDeviceInfo[]) => void;
+  onDeviceSelectError?: (e: Error) => void;
   initialSelection?: string;
+  /** will force the browser to only return the specified device
+   * will call `onDeviceSelectError` with the error in case this fails
+   */
+  exactMatch?: boolean;
+  track?: LocalAudioTrack | LocalVideoTrack;
+  /**
+   * this will call getUserMedia if the permissions are not yet given to enumerate the devices with device labels.
+   * in some browsers multiple calls to getUserMedia result in multiple permission prompts.
+   * It's generally advised only flip this to true, once a (preview) track has been acquired successfully with the
+   * appropriate permissions.
+   *
+   * @see {@link MediaDeviceMenu}
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices | MDN enumerateDevices}
+   */
+  requestPermissions?: boolean;
 }
 
 /**
- * The MediaDeviceSelect list all media devices of one kind.
+ * The `MediaDeviceSelect` list all media devices of one kind.
  * Clicking on one of the listed devices make it the active media device.
  *
  * @example
@@ -57,24 +37,31 @@ export interface MediaDeviceSelectProps extends React.HTMLAttributes<HTMLUListEl
  *   <MediaDeviceSelect kind='audioinput' />
  * </LiveKitRoom>
  * ```
+ * @public
  */
 export function MediaDeviceSelect({
   kind,
   initialSelection,
   onActiveDeviceChange,
   onDeviceListChange,
+  onDeviceSelectError,
+  exactMatch,
+  track,
+  requestPermissions,
   ...props
 }: MediaDeviceSelectProps) {
   const room = useMaybeRoomContext();
   const { devices, activeDeviceId, setActiveMediaDevice, className } = useMediaDeviceSelect({
     kind,
     room,
+    track,
+    requestPermissions,
   });
   React.useEffect(() => {
-    if (initialSelection) {
+    if (initialSelection !== undefined) {
       setActiveMediaDevice(initialSelection);
     }
-  });
+  }, [setActiveMediaDevice]);
 
   React.useEffect(() => {
     if (typeof onDeviceListChange === 'function') {
@@ -82,9 +69,22 @@ export function MediaDeviceSelect({
     }
   }, [onDeviceListChange, devices]);
 
+  React.useEffect(() => {
+    if (activeDeviceId && activeDeviceId !== '') {
+      onActiveDeviceChange?.(activeDeviceId);
+    }
+  }, [activeDeviceId]);
+
   const handleActiveDeviceChange = async (deviceId: string) => {
-    setActiveMediaDevice(deviceId);
-    onActiveDeviceChange?.(deviceId);
+    try {
+      await setActiveMediaDevice(deviceId, { exact: exactMatch });
+    } catch (e) {
+      if (e instanceof Error) {
+        onDeviceSelectError?.(e);
+      } else {
+        throw e;
+      }
+    }
   };
   // Merge Props
   const mergedProps = React.useMemo(
@@ -92,9 +92,14 @@ export function MediaDeviceSelect({
     [className, props],
   );
 
+  function isActive(deviceId: string, activeDeviceId: string, index: number) {
+    return deviceId === activeDeviceId || (index === 0 && activeDeviceId === 'default');
+  }
+
   return (
     <ul {...mergedProps}>
-      {devices.map((device) => {
+      {
+      devices.map((device) => {
         const classn = device.deviceId === activeDeviceId ? ' bg-secondary-content' : 'bg-primary';
         const cl = classn + " rounded-md"
         return (
@@ -113,20 +118,6 @@ export function MediaDeviceSelect({
             </li>
         )
       }
-    //   (
-    //     <li
-    //       key={device.deviceId}
-    //       id={device.deviceId}
-    //       data-lk-active={device.deviceId === activeDeviceId}
-    //       aria-selected={device.deviceId === activeDeviceId}
-    //       role="option"
-    //     >
-    //       <button className="lk-button" onClick={() => handleActiveDeviceChange(device.deviceId)}>
-    //         {device.label}
-    //       </button>
-    //     </li>
-    //   )
-      
       )}
     </ul>
   );

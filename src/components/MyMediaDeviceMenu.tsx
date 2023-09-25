@@ -1,17 +1,30 @@
 import { computeMenuPosition, wasClickOutside } from '@livekit/components-core';
-import { log } from '@livekit/components-core';
+import * as React from 'react';
 // import { MediaDeviceSelect } from '@livekit/components-react';
 import { MediaDeviceSelect } from '@/components/MyMediaDeviceSelect';
-import React, {useEffect, useLayoutEffect} from 'react';
+import { log } from '@livekit/components-core';
+import type { LocalAudioTrack, LocalVideoTrack } from 'livekit-client';
 
-interface MediaDeviceMenuProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+/** @public */
+export interface MediaDeviceMenuProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   kind?: MediaDeviceKind;
   initialSelection?: string;
   onActiveDeviceChange?: (kind: MediaDeviceKind, deviceId: string) => void;
+  tracks?: Partial<Record<MediaDeviceKind, LocalAudioTrack | LocalVideoTrack | undefined>>;
+  /**
+   * this will call getUserMedia if the permissions are not yet given to enumerate the devices with device labels.
+   * in some browsers multiple calls to getUserMedia result in multiple permission prompts.
+   * It's generally advised only flip this to true, once a (preview) track has been acquired successfully with the
+   * appropriate permissions.
+   *
+   * @see {@link PreJoin}
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices | MDN enumerateDevices}
+   */
+  requestPermissions?: boolean;
 }
 
 /**
- * The MediaDeviceMenu prefab component is a button that opens a menu that lists
+ * The `MediaDeviceMenu` component is a button that opens a menu that lists
  * all media devices and allows the user to select them.
  *
  * @remarks
@@ -23,13 +36,16 @@ interface MediaDeviceMenuProps extends React.ButtonHTMLAttributes<HTMLButtonElem
  *   <MediaDeviceMenu />
  * </LiveKitRoom>
  * ```
+ * @public
  */
-export const MediaDeviceMenu = ({
+export function MediaDeviceMenu({
   kind,
   initialSelection,
   onActiveDeviceChange,
+  tracks,
+  requestPermissions = false,
   ...props
-}: MediaDeviceMenuProps) => {
+}: MediaDeviceMenuProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [devices, setDevices] = React.useState<MediaDeviceInfo[]>([]);
   const [updateRequired, setUpdateRequired] = React.useState<boolean>(true);
@@ -42,7 +58,6 @@ export const MediaDeviceMenu = ({
 
   const button = React.useRef<HTMLButtonElement>(null);
   const tooltip = React.useRef<HTMLDivElement>(null);
-  
 
   const handleClickOutside = React.useCallback(
     (event: MouseEvent) => {
@@ -61,8 +76,10 @@ export const MediaDeviceMenu = ({
 
   React.useEffect(() => {
     document.addEventListener<'click'>('click', handleClickOutside);
+    window.addEventListener<'resize'>('resize', () => setUpdateRequired(true));
     return () => {
       document.removeEventListener<'click'>('click', handleClickOutside);
+      window.removeEventListener<'resize'>('resize', () => setUpdateRequired(true));
     };
   }, [handleClickOutside, setUpdateRequired]);
 
@@ -77,38 +94,50 @@ export const MediaDeviceMenu = ({
       >
         {props.children}
       </button>
-
-      <div
-        className="lk-device-menu "
-        ref={tooltip}
-        style={{ visibility: isOpen ? 'visible' : 'hidden' }}
-      >
-        {kind ? (
-          <MediaDeviceSelect
-            className=' bg-primary rounded-lg text-white flex flex-col-reverse absolute
-            min-w-[200px] max-w-[300px]  sm:min-w-[300px] sm:max-w-[600px] w-fit left-[-50%] sm:right-[50%] top-auto bottom-full sm:text-base'
-            initialSelection={initialSelection}
-            onActiveDeviceChange={(deviceId) => handleActiveDeviceChange(kind, deviceId)}
-            onDeviceListChange={setDevices}
-            kind={kind}
-          />
-        ) : (
-          <>
-            <div className="lk-device-menu-heading">Audio inputs</div>
+      {/** only render when enabled in order to make sure that the permissions are requested only if the menu is enabled */}
+      {!props.disabled && (
+        <div
+          className="lk-device-menu"
+          ref={tooltip}
+          style={{ visibility: isOpen ? 'visible' : 'hidden' }}
+        >
+          {kind ? (
             <MediaDeviceSelect
-              kind="audioinput"
-              onActiveDeviceChange={(deviceId) => handleActiveDeviceChange('audioinput', deviceId)}
+                className=' bg-primary rounded-lg text-white flex flex-col-reverse absolute
+                min-w-[200px] max-w-[300px]  sm:min-w-[300px] sm:max-w-[600px] w-fit left-[-50%] sm:right-[50%] top-auto bottom-full sm:text-base'
+              initialSelection={initialSelection}
+              onActiveDeviceChange={(deviceId) => handleActiveDeviceChange(kind, deviceId)}
               onDeviceListChange={setDevices}
+              kind={kind}
+              track={tracks?.[kind]}
+              requestPermissions={requestPermissions}
             />
-            <div className="lk-device-menu-heading">Video inputs</div>
-            <MediaDeviceSelect
-              kind="videoinput"
-              onActiveDeviceChange={(deviceId) => handleActiveDeviceChange('videoinput', deviceId)}
-              onDeviceListChange={setDevices}
-            />
-          </>
-        )}
-      </div>
+          ) : (
+            <>
+              <div className="lk-device-menu-heading">Audio inputs</div>
+              <MediaDeviceSelect
+                kind="audioinput"
+                onActiveDeviceChange={(deviceId) =>
+                  handleActiveDeviceChange('audioinput', deviceId)
+                }
+                onDeviceListChange={setDevices}
+                track={tracks?.audioinput}
+                requestPermissions={requestPermissions}
+              />
+              <div className="lk-device-menu-heading">Video inputs</div>
+              <MediaDeviceSelect
+                kind="videoinput"
+                onActiveDeviceChange={(deviceId) =>
+                  handleActiveDeviceChange('videoinput', deviceId)
+                }
+                onDeviceListChange={setDevices}
+                track={tracks?.videoinput}
+                requestPermissions={requestPermissions}
+              />
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
-};
+}

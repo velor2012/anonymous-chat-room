@@ -1,18 +1,33 @@
 import type { Participant } from 'livekit-client';
-import { LocalAudioTrack, RemoteAudioTrack, Track } from 'livekit-client';
+import {  LocalAudioTrack, RemoteAudioTrack, Track } from 'livekit-client';
 import * as React from 'react';
-import { useMediaTrack } from '@livekit/components-react'
+import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import { useTrack, useMaybeParticipantContext, useMaybeTrackRefContext } from '@livekit/components-react';
 import { createAudioAnalyser} from '@/lib/client-utils'
 import { useObservableState } from '@/livekit-react-offical/hooks/internal';
 import { denoiseMethod$ } from '@/lib/observe/DenoiseMethodObs';
 import { defaultAudioSetting } from '@/lib/const';
 import { useMainBrowser } from "@/lib/hooks/useMainBrowser";
-// import DetectRTC from 'detectrtc';
+import { DenoiseMethod } from '@/lib/types';
+
+/** @public */
 export interface AudioVisualizerProps extends React.HTMLAttributes<SVGElement> {
+  /** @deprecated this property will be removed in a future version, use `trackRef` instead */
   participant?: Participant;
+  trackRef?: TrackReferenceOrPlaceholder;
 }
 
-export function AudioVisualizer({ participant, ...props }: AudioVisualizerProps) {
+/**
+ * The AudioVisualizer component is used to visualize the audio volume of a given audio track.
+ * @remarks
+ * Requires a `TrackReferenceOrPlaceholder` to be provided either as a property or via the `TrackRefContext`.
+ * @example
+ * ```tsx
+ * <AudioVisualizer />
+ * ```
+ * @public
+ */
+export function AudioVisualizer({ participant, trackRef, ...props }: AudioVisualizerProps) {
   const [volumeBars, setVolumeBars] = React.useState<Array<number>>([]);
 
   const svgWidth = 200;
@@ -22,25 +37,35 @@ export function AudioVisualizer({ participant, ...props }: AudioVisualizerProps)
   const volMultiplier = 50;
   const barCount = 7;
 
-  const { track } = useMediaTrack(Track.Source.Microphone, participant);
+  const p = useMaybeParticipantContext() ?? participant;
+  let ref = useMaybeTrackRefContext() ?? trackRef;
+
+  if (!ref) {
+    if (!p) {
+      throw Error(`Participant missing, provide it directly or within a context`);
+    }
+    ref = { participant: p, source: Track.Source.Microphone };
+  }
+  const { track } = useTrack(ref);
+
   // add cwy 查看当前选择的降噪方法是否为join
   const denoiseMethod = useObservableState(denoiseMethod$, {...defaultAudioSetting.denoiseMethod});
   const isMainBrowser  = useMainBrowser()
+  let m: DenoiseMethod;
+  if(isMainBrowser){
+      m = denoiseMethod
+  }
+
   React.useEffect(() => {
     
-    if (!track || !(track instanceof LocalAudioTrack || track instanceof RemoteAudioTrack)) {
+    if (!m || !track || !(track instanceof LocalAudioTrack || track instanceof RemoteAudioTrack)) {
       return;
     }
-    let m = undefined
-    if(isMainBrowser){
-        m = denoiseMethod
-    }
-
+    console.log("sdfsd")
     const { analyser, cleanup } = createAudioAnalyser(track, m, {
         smoothingTimeConstant: 0.8,
         fftSize: 64,
         });
-    
 
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
@@ -79,6 +104,7 @@ export function AudioVisualizer({ participant, ...props }: AudioVisualizerProps)
       clearInterval(calcInterval);
       cleanup();
     };
+
     // add by cwy
     // offical version has a bug, need to add `track?.mediaStream` to the dependency array
   }, [track, track?.mediaStream, denoiseMethod, isMainBrowser]);

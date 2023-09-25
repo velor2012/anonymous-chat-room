@@ -1,8 +1,7 @@
-import { setupChat, ChatMessage, ReceivedChatMessage,wasClickOutside } from '@livekit/components-core';
-import React, { memo } from 'react';
-import { useRoomContext, MessageFormatter, useChat, useLocalParticipant } from '@livekit/components-react';
+import { MessageEncoder, MessageDecoder, ChatMessage, ReceivedChatMessage,wasClickOutside } from '@livekit/components-core';
+import React from 'react';
+import { MessageFormatter, useChat, useMaybeLayoutContext } from '@livekit/components-react';
 import { ChatEntry } from '@/components/MyChatEntry'
-import { sendMessage } from '@livekit/components-core'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { DataPacket_Kind } from 'livekit-client';
@@ -29,6 +28,8 @@ export type { ChatMessage, ReceivedChatMessage };
 
 export interface ChatProps extends React.HTMLAttributes<HTMLDivElement> {
     messageFormatter?: MessageFormatter;
+    messageEncoder?: MessageEncoder;
+    messageDecoder?: MessageDecoder;
   }
 
 /**
@@ -42,10 +43,20 @@ export interface ChatProps extends React.HTMLAttributes<HTMLDivElement> {
  * </LiveKitRoom>
  * ```
  */
-export function ChatCard({ messageFormatter, ...props }: ChatProps) {
+export function Chat({ messageFormatter, messageDecoder, messageEncoder, ...props }: ChatProps) {
     const inputRef = React.useRef<HTMLTextAreaElement>(null);
     const ulRef = React.useRef<HTMLUListElement>(null);
-    const { send, chatMessages, isSending } = useChat();
+
+    const chatOptions = React.useMemo(() => {
+        return { messageDecoder, messageEncoder };
+      }, [messageDecoder, messageEncoder]);
+
+    const { send, chatMessages, isSending } = useChat(chatOptions);
+    
+      const layoutContext = useMaybeLayoutContext();
+      const lastReadMsgAt = React.useRef<ChatMessage['timestamp']>(0);
+    
+
     const emojiRef = React.useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = React.useState(false);
     async function handleSubmit(event: React.FormEvent) {
@@ -64,6 +75,32 @@ export function ChatCard({ messageFormatter, ...props }: ChatProps) {
         }
     }, [ulRef, chatMessages]);
 
+    React.useEffect(() => {
+        if (!layoutContext || chatMessages.length === 0) {
+          return;
+        }
+    
+        if (
+          layoutContext.widget.state?.showChat &&
+          chatMessages.length > 0 &&
+          lastReadMsgAt.current !== chatMessages[chatMessages.length - 1]?.timestamp
+        ) {
+          lastReadMsgAt.current = chatMessages[chatMessages.length - 1]?.timestamp;
+          return;
+        }
+    
+        const unreadMessageCount = chatMessages.filter(
+          (msg) => !lastReadMsgAt.current || msg.timestamp > lastReadMsgAt.current,
+        ).length;
+    
+        const { widget } = layoutContext;
+        if (unreadMessageCount > 0 && widget.state?.unreadMessages !== unreadMessageCount) {
+          widget.dispatch?.({ msg: 'unread_msg', count: unreadMessageCount });
+        }
+      }, [chatMessages, layoutContext?.widget]);
+
+    // 👇add by cwy
+    // 表情相关
     const handleEmojiSelect = (emoji: any) => {
         if (inputRef.current) {
             const inp = inputRef.current
@@ -74,39 +111,7 @@ export function ChatCard({ messageFormatter, ...props }: ChatProps) {
             inp.focus();
         }
     }
-    // 发送图片的数据回调
-    // const handleAdd = (e: React.MouseEvent) => {
-    //     debugger
-    //     if(document){
-    //         const dom :any = document.getElementById("fileSelect")
-    //         if(!dom) return
-    //         dom.onchange=function(){         
-    //             const reader = new FileReader();
-    //             var fil=dom.files as Blob[];
-    //             if(fil[0].size > 2*1024*1024) {
-    //                 alert("图片大小不能超过2M");
-    //                 return;
-    //             }
-    //             reader.readAsDataURL(fil[0]);
-    //             reader.onload = async function(event: any) {
-    //                 const base64Data = event.target.result;
-    //                 // 在这里调用上传图片的函数，传入base64Data参数即可
-    //                 console.log(base64Data);
-    //                 if(send){
-    //                     const encoder = new TextEncoder()
-    //                 // publishData takes in a Uint8Array, so we need to convert it
-    //                     const data = encoder.encode(base64Data);
 
-
-    //                     // publish reliable data to a set of participants
-    //                     localParticipant.publishData(data, DataPacket_Kind.RELIABLE, ['participant_sid'])
-    //                     // await send(base64Data);
-    //                 }
-    //             };
-    //         }
-    //         dom.click()
-    //     }
-    // }
     const handleEmojiClick = (e: React.MouseEvent) => {
         setIsOpen(!isOpen)
         
@@ -119,7 +124,7 @@ export function ChatCard({ messageFormatter, ...props }: ChatProps) {
                 // 按下ALT+ENTER键，插入换行符
                 inp.value += "\r\n";;
                 inp.scrollTop = inp.scrollHeight;
-                debugger
+                
             } 
             else if (e.code == "Enter") {
                 

@@ -1,7 +1,11 @@
+
+import { supportsScreenSharing } from '@livekit/components-core';
+import { mergeProps } from '@/livekit-react-offical/utils';
+
 import { ScreenSharePresets, Track, VideoPreset } from 'livekit-client';
 import * as React from 'react';
 import { ChatIcon, LeaveIcon } from '@/livekit-react-offical/assets/icons';
-import { ChatToggle, StartAudio, TrackToggle, DisconnectButton, useRoomContext } from '@livekit/components-react';
+import { ChatToggle, StartAudio, TrackToggle, DisconnectButton, useMaybeLayoutContext } from '@livekit/components-react';
 import { isMobileBrowser } from '@livekit/components-core';
 import { useLocalParticipantPermissions } from '@livekit/components-react';
 // import { useMediaQuery } from '../hooks/internal';
@@ -14,7 +18,9 @@ import { ShareVideoPannel } from './VideoShare/VideoSharePannel';
 import CameraMicIcon from './Icons/CameraMicIcon';
 import { useTranslation } from 'react-i18next';
 
-type ControlBarControls = {
+
+/** @public */
+export type ControlBarControls = {
   microphone?: boolean;
   camera?: boolean;
   chat?: boolean;
@@ -23,14 +29,15 @@ type ControlBarControls = {
   shareVideo?: boolean;
 };
 
-export type ControlBarProps = React.HTMLAttributes<HTMLDivElement> & {
+/** @public */
+export interface ControlBarProps extends React.HTMLAttributes<HTMLDivElement> {
   variation?: 'minimal' | 'verbose' | 'textOnly';
   controls?: ControlBarControls;
-};
+}
 
 /**
- * The ControlBar prefab component gives the user the basic user interface
- * to control their media devices and leave the room.
+ * The `ControlBar` prefab gives the user the basic user interface to control their
+ * media devices (camera, microphone and screen share), open the `Chat` and leave the room.
  *
  * @remarks
  * This component is build with other LiveKit components like `TrackToggle`,
@@ -42,13 +49,25 @@ export type ControlBarProps = React.HTMLAttributes<HTMLDivElement> & {
  *   <ControlBar />
  * </LiveKitRoom>
  * ```
+ * @public
  */
 export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
-  const defaultVariation = useMediaQuery(`(max-width: 660px)`) ? 'minimal' : 'verbose';
-  const localPermissions = useLocalParticipantPermissions();
+  const [isChatOpen, setIsChatOpen] = React.useState(false);
+  const layoutContext = useMaybeLayoutContext();
+  
+  React.useEffect(() => {
+    if (layoutContext?.widget.state?.showChat !== undefined) {
+      setIsChatOpen(layoutContext?.widget.state?.showChat);
+    }
+  }, [layoutContext?.widget.state?.showChat]);
+  const isTooLittleSpace = useMediaQuery(`(max-width: ${isChatOpen ? 1000 : 760}px)`);
+
+  const defaultVariation = isTooLittleSpace ? 'minimal' : 'verbose';
   variation ??= defaultVariation;
 
   const visibleControls = { leave: true, ...controls };
+
+  const localPermissions = useLocalParticipantPermissions();
 
   if (!localPermissions) {
     visibleControls.camera = false;
@@ -72,15 +91,17 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
     () => variation === 'textOnly' || variation === 'verbose',
     [variation],
   );
-
-  const isMobile = React.useMemo(() => isMobileBrowser(), []);
   const { t, i18n } = useTranslation()
-  
+  const isMobile = React.useMemo(() => isMobileBrowser(), []);
+  const browserSupportsScreenSharing = supportsScreenSharing();
+
   const [isScreenShareEnabled, setIsScreenShareEnabled] = React.useState(false);
 
   const onScreenShareChange = (enabled: boolean) => {
     setIsScreenShareEnabled(enabled);
   };
+
+  const htmlProps = mergeProps({ className: 'lk-control-bar' }, props);
 
   return (
     <div className=" z-1 lk-control-bar" {...props}>
@@ -144,7 +165,7 @@ export function ControlBar({ variation, controls, ...props }: ControlBarProps) {
         </div>
         </div>
       )}
-      {visibleControls.camera && !isMobile && (
+      {visibleControls.camera && browserSupportsScreenSharing && !isMobile && (
         <div className="bg-primary rounded-lg">
         <div className="flex">
           <TrackToggle

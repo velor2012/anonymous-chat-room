@@ -4,7 +4,7 @@ import {
 //   LocalUserChoices,
 //   VideoConference,
 useToken,
-  formatChatMessageLinks,
+formatChatMessageLinks,
 } from '@livekit/components-react';
 import {MyErrorToast} from "@/components/Toast"
 import {VideoConference} from "@/components/MyVideoConference"
@@ -169,6 +169,7 @@ useEffect(()=>{
           video={false}
           audio={userChoices.audioEnabled}
           onDisconnected={onLeave}
+          data-lk-theme="default" 
         >
           <WebAudioContext.Provider value={audioContext}>
           <VideoConference chatMessageFormatter={formatChatMessageLinks} />

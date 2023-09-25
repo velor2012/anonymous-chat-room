@@ -8,7 +8,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCurState } from "@/lib/hooks/useCurState";
 import { useRoomInfo } from "@/lib/hooks/useRoomInfo";
 import SettingIcon from "./Icons/SettingIcon";
-import { isMobileBrowser } from '@livekit/components-core';
 import { useTranslation } from "react-i18next";
 
 export function OptionPanel({showIcon,showText, ...props}: any) {

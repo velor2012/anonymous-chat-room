@@ -1,8 +1,8 @@
 
 import type { AppProps } from 'next/app';
-// import '@livekit/components-styles';
+import '@livekit/components-styles';
 // import '@/styles/components-styles';
-// import '@livekit/components-styles/prefabs';
+import '@livekit/components-styles/prefabs';
 // import '@/styles/general/index.css'
 import '../styles/globals.css';
 import { DefaultSeo } from 'next-seo';
