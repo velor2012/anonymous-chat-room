@@ -24,7 +24,7 @@
     "emoji-mart": "^5.5.2",
     "i18next": "^23.2.3",
     "livekit-client": "1.13.4",
-    "livekit-server-sdk": "1.13.4",
+    "livekit-server-sdk": "1.2.6",
     "lru-cache": "^9.0.1",
     "next": "13.2.4",
     "next-seo": "^5.15.0",
