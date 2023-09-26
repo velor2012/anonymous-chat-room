@@ -1,4 +1,4 @@
-import { tokenize, defaultGrammar, ReceivedChatMessage } from '@livekit/components-core';
+import { tokenize, ReceivedChatMessage } from '@livekit/components-core';
 import * as React from 'react';
 
 export type MessageFormatter = (message: string) => React.ReactNode;
@@ -71,25 +71,4 @@ export function ChatEntry({ entry, messageFormatter, ...props }: ChatEntryProps)
     </div>
   </li>
 );
-}
-
-export function formatChatMessageLinks(message: string): React.ReactNode {
-  return tokenize(message, defaultGrammar).map((tok, i) => {
-    if (typeof tok === `string`) {
-      return tok;
-    } else {
-      const content = tok.content.toString();
-      const href =
-        tok.type === `url`
-          ? /^http(s?):\/\//.test(content)
-            ? content
-            : `https://${content}`
-          : `mailto:${content}`;
-      return (
-        <a className="lk-chat-link" key={i} href={href} target="_blank" rel="noreferrer">
-          {content}
-        </a>
-      );
-    }
-  });
 }

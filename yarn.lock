@@ -155,7 +155,7 @@
     clsx "^2.0.0"
     usehooks-ts "^2.9.1"
 
-"@livekit/components-styles@^1.2.2":
+"@livekit/components-styles@^1.0.6":
   version "1.0.6"
   resolved "https://registry.npmjs.org/@livekit/components-styles/-/components-styles-1.0.6.tgz#2649c61a631efff37eb2326e100e34a84e597d71"
   integrity sha512-/toY2NFJCU0NdeP9AB+CWW9kPf8gdpndIoR0hYTKjDb8pHPdXDu5NE7XyO8qKIeV4biRFGsQ9+C3giPNgYm9TA==
@@ -1825,7 +1825,7 @@ livekit-client@1.13.4:
     typed-emitter "^2.1.0"
     webrtc-adapter "^8.1.1"
 
-livekit-server-sdk@1.13.4:
+livekit-server-sdk@1.2.6:
   version "1.2.6"
   resolved "https://registry.npmjs.org/livekit-server-sdk/-/livekit-server-sdk-1.2.6.tgz#0f336b2851f6580861f015ceb43e27937d79d020"
   integrity sha512-Oc3lArzsyS3zzjQcTMqb3mnzHXTch0g8p4GqOcuaDaeo7J7vbf0soFUd94vURgqBq5h7wOTOOi7DlC2S0nj6LA==
