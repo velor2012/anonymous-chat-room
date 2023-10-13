@@ -12,7 +12,9 @@ You can try an online demo right now at <https://chat.cwy666.eu.org/>, This demo
 ## Features
 - [x] Easy to deploy, You can use the free service of  [livekit cloud ](https://cloud.livekit.io) directly, without using your own server
 - [x] Support video and voice chat (only voice is allowed by default), no login required
-- [x] Audio noise reduction, support for ***Speex*** and ***RNNdenoise***(enabled by default), integration[web-noise-suppressor](https://github.com/sapphi-red/web-noise-suppressor), not support **safari**
+- [x] Audio noise reduction, support for ***Speex*** and ***RNNdenoise***(enabled by default), integration[web-noise-suppressor](https://github.com/sapphi-red/web-noise-suppressor), not support 
+- [x] End-to-end Encryption(e2ee)
+**safari**
 - [x] Text chat in room, can send text or emoji
   - [x] More custom emoji support
   - [ ] More message types, including images, videos 🚩

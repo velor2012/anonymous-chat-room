@@ -8,7 +8,7 @@ formatChatMessageLinks,
 } from '@livekit/components-react';
 import {MyErrorToast} from "@/components/Toast"
 import {VideoConference} from "@/components/MyVideoConference"
-import { LogLevel, RoomOptions, VideoPresets, TrackPublishDefaults, TrackPublishOptions } from 'livekit-client';
+import { LogLevel, RoomOptions, ExternalE2EEKeyProvider, Room } from 'livekit-client';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -22,6 +22,7 @@ import { TokenResult } from '@/lib/types';
 import { curState, curState$ } from '@/lib/observe/CurStateObs';
 import { WebAudioContext } from '@/lib/context/webAudioContex';
 import { useSetContext } from '@/lib/context/setContext';
+import { randomBytes, randomUUID } from 'crypto';
 log.setDefaultLevel(LogLevel.warn)
 const Home: NextPage = () => {
   const router = useRouter();
@@ -143,7 +144,7 @@ useEffect(()=>{
   const { region, hq } = router.query;
 
   const liveKitUrl = useServerUrl(region as string | undefined);
-  
+
   const roomOptions = useMemo((): RoomOptions => {
     let setting: RoomOptions =  {
         audioCaptureDefaults: {
@@ -152,12 +153,44 @@ useEffect(()=>{
         },
         adaptiveStream: { pixelDensity: 'screen' },
         dynacast: true,
-        publishDefaults: publishDefaults
+        publishDefaults: publishDefaults,
+        e2ee: undefined
       };
       
       if(audioContext) setting = {...setting, expWebAudioMix: { audioContext } }
     return setting
+    
   }, [userChoices, hq, audioContext]);
+
+
+// using e2ee
+  let e2eeOptions = undefined
+  if(!!process.env.NEXT_PUBLIC_E2EETOKEN){
+    const keyProvider = useMemo(() => new ExternalE2EEKeyProvider(), []);
+    // const e2eePasswd =  randomBytes(20).toString('hex')
+
+    keyProvider.setKey(process.env.NEXT_PUBLIC_E2EETOKEN);
+    console.log("e2eePasswd:", process.env.NEXT_PUBLIC_E2EETOKEN)
+    e2eeOptions = useMemo(
+    () =>
+            typeof window !== 'undefined'
+            ? {
+                keyProvider,
+                worker: new Worker(new URL('livekit-client/e2ee-worker', import.meta.url)),
+                }
+            : undefined,
+
+    [],
+    );
+  }
+  roomOptions.e2ee = e2eeOptions
+  const room = useMemo(
+    () =>
+      new Room(roomOptions),
+    [],
+  );
+  !!e2eeOptions && !!process.env.NEXT_PUBLIC_E2EETOKEN && room.setE2EEEnabled(true);
+
 
   return (
     <div  className='w-full top-16 relative' style={{ height: "calc(100% - 4rem)"}}>
@@ -165,7 +198,8 @@ useEffect(()=>{
         <LiveKitRoom
           token={token?.accessToken}
           serverUrl={liveKitUrl}
-          options={roomOptions}
+          room={room}
+        //   options={roomOptions}
           video={false}
           audio={userChoices.audioEnabled}
           onDisconnected={onLeave}

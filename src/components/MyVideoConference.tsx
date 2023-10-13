@@ -70,7 +70,6 @@ import type {
     }else{
         sourceArrs.push({ source: Track.Source.Microphone, withPlaceholder: false })
     }
-        debugger
     if(process.env.NEXT_PUBLIC_USE_SCREEN === "true"){
         sourceArrs.push({  source: Track.Source.ScreenShare, withPlaceholder: false })
     }

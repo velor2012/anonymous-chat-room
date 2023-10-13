@@ -10,7 +10,10 @@ main {
   margin: 0px;
 }
 
-
+.lk-toast{
+    z-index: 50;
+    background-color: var(--lk-bg2);
+}
 .lk-connection-quality[data-lk-quality=excellent]{
     color:var(--lk-connection-excellent);
 }

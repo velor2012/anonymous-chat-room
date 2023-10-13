@@ -15,6 +15,7 @@
 - [x] 部署简单，前端支持直接部署到vercel, 后端可以直接使用  [livekit cloud ](https://cloud.livekit.io) 的免费服务，也可以按照[官方文档](https://docs.livekit.io)自建
 - [x] 支持视频，语音聊天(默认只允许语音)，无需登录
 - [x] 音频降噪，支持speex以及RNNdenoise(默认开启), 整合[web-noise-suppressor](https://github.com/sapphi-red/web-noise-suppressor), 不支持safari
+- [x] End-to-end Encryption(e2ee)
 - [x] 支持文本聊天，也可以使用emoji
   - [x] 支持emoji表情搜索
   - [ ] 支持更多的消息类型，如图片，视频 🚩
