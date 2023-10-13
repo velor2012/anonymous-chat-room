@@ -39,7 +39,7 @@ React.useEffect(() => {
       {tracks.map((trackRef) => 
       {
         const v = volumesMap.get(trackRef.participant.identity)
-        console.log(`set volume ${v} for ${trackRef.participant.identity}`)
+        // console.log(`set volume ${v} for ${trackRef.participant.identity}`)
         return (
             v != 0 &&
             <AudioTrack hidden key={trackRef.publication.trackSid} {...trackRef} volume={volumesMap.get(trackRef.participant.identity)} />

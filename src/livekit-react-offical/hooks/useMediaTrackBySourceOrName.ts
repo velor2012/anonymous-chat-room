@@ -57,7 +57,7 @@ export function useMediaTrackBySourceOrName(
         track?.detach(previousElement.current);
       }
     };
-  }, [track, options.element]);
+  }, [track, options.element, observerOptions.participant]);
 
   React.useEffect(() => {
     // Set the orientation of the video track.
