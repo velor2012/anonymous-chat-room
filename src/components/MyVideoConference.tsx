@@ -4,28 +4,32 @@ import type {
     TrackReferenceOrPlaceholder,
     WidgetState,
   } from '@livekit/components-core';
-  import { isEqualTrackRef, isTrackReference, isWeb, log } from '@livekit/components-core';
-  import { RoomEvent, Track } from 'livekit-client';
-  import * as React from 'react';
-  import { useTracks, usePinnedTracks, LayoutContextProvider,
-     FocusLayoutContainer,
-     ConnectionStateToast, MessageFormatter, useCreateLayoutContext,
-    //  Chat, 
-     CarouselLayout,
-    //  FocusLayout,
-     GridLayout,
-    //  ParticipantTile,
-    //  RoomAudioRenderer,
-    //  ControlBar,
-    } from '@livekit/components-react';
-    import { useIsShareVideo } from '@/lib/hooks/useIsShareVideo';
-    import { useCurState } from '@/lib/hooks/useCurState';
-    import { VideoShareTile } from './VideoShare/VideoShareTile';
-    import {ControlBar} from "@/components/MyControlBar";
-    import {FocusLayout} from "@/components/MyFocusLayout";
-    import {Chat} from "@/components/MyChat";
-    import {ParticipantTile} from "@/components/MyParticipantTile";
-    import {RoomAudioRenderer} from "@/components/MyRoomAudioRenderer";
+import { isEqualTrackRef, isTrackReference, isWeb, log } from '@livekit/components-core';
+import { RoomEvent, Track } from 'livekit-client';
+import * as React from 'react';
+import { useTracks, usePinnedTracks, LayoutContextProvider,
+    FocusLayoutContainer,
+    ConnectionStateToast, MessageFormatter, useCreateLayoutContext,
+//  Chat, 
+    CarouselLayout,
+//  FocusLayout,
+    GridLayout,
+    useRoomContext,
+    useParticipants,
+//  ParticipantTile,
+//  RoomAudioRenderer,
+//  ControlBar,
+} from '@livekit/components-react';
+import { useIsShareVideo } from '@/lib/hooks/useIsShareVideo';
+import { useCurState } from '@/lib/hooks/useCurState';
+import { VideoShareTile } from './VideoShare/VideoShareTile';
+import {ControlBar} from "@/components/MyControlBar";
+import {FocusLayout} from "@/components/MyFocusLayout";
+import {Chat} from "@/components/MyChat";
+import {ParticipantTile} from "@/components/MyParticipantTile";
+import {RoomAudioRenderer} from "@/components/MyRoomAudioRenderer";
+import { curState, curState$ } from '@/lib/observe/CurStateObs';
+import { RoomInfoUseForParticipant, roominfo$ } from '@/lib/observe/RoomInfoObs';
   /**
    * @public
    */
@@ -73,7 +77,9 @@ import type {
     if(process.env.NEXT_PUBLIC_USE_SCREEN === "true"){
         sourceArrs.push({  source: Track.Source.ScreenShare, withPlaceholder: false })
     }
-
+    //add cwy
+    const room = useRoomContext()
+    const participants = useParticipants()
     const tracks = useTracks(
         sourceArrs,
       { updateOnlyOn: [RoomEvent.ActiveSpeakersChanged], onlySubscribed: false },
@@ -122,7 +128,37 @@ import type {
         .join(),
       focusTrack?.publication?.trackSid,
     ]);
-  
+
+      
+      //add cwy 监视当前房间的信息，推送给roominfo$
+      React.useEffect(() => {
+        const cus : curState = {
+            join: true,
+            isAdmin: false
+        }
+        let metadataObj = undefined
+        if(room.metadata != undefined && room.metadata != ""){
+            metadataObj = JSON.parse(room.metadata as string)
+            cus.roomMetadata = metadataObj
+        }
+        
+        const roominfo : RoomInfoUseForParticipant = {
+            room_name: room.name,
+            participant_num: participants.length,
+            passwd: metadataObj?.passwd,
+            max_participant_num: metadataObj?.maxParticipants,
+        }
+        roominfo$.next(roominfo)
+    
+    
+        const lp = participants[0]
+        
+        if(lp.metadata != undefined && lp.metadata != ""){
+            const met = JSON.parse(lp.metadata as string)
+            cus.isAdmin = met.admin
+        }
+        curState$.next(cus)
+    }, [participants.length, room.name, room.metadata, room])
     return (
       <div className="lk-video-conference" {...props}>
         {isWeb() && (
